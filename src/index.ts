@@ -2,7 +2,6 @@
 import { readFile } from "node:fs/promises";
 import { exiftool, WriteTags } from "exiftool-vendored";
 import { resolve } from "node:path";
-
 export async function execute({
   path,
   provider,
@@ -21,38 +20,65 @@ export async function execute({
   dry?: boolean;
 }) {
   const anotherFile = resolve(path);
-  const buffer = await readFile(anotherFile);
 
-  if (verbose) console.log("Read file from", anotherFile);
-
-  const module =
-    (await import("./provider/" + provider + ".js")) ??
-    (await import(provider));
-
-  if (module == null) {
-    console.error("Import provider failed. Provider name:", provider);
-    return;
+  try {
+    const buffer = await readFile(anotherFile);
+    if (verbose) console.log("Read file from", anotherFile);
+    let module;
+    try {
+      module =
+        (await import("./provider/" + provider + ".js")) ??
+        (await import(provider));
+    } catch (error) {
+      console.error(
+        "Failed to import provider. Provider name:",
+        provider,
+        error,
+      );
+      return;
+    }
+    if (module == null) {
+      console.error("Import provider failed. Provider name:", provider);
+      return;
+    }
+    if (verbose) console.log("Imported provider:", provider);
+    let description;
+    try {
+      description = await module.getDescription?.({
+        buffer,
+        model,
+        prompt,
+      });
+    } catch (error) {
+      console.error(
+        "Failed to get description from provider. Provider name:",
+        provider,
+        error,
+      );
+      return;
+    }
+    if (verbose) console.log("Description is:", description);
+    if (description && !dry) {
+      try {
+        await exiftool.write(
+          path,
+          Object.fromEntries(tags.map((t) => [t, description])),
+        );
+        if (verbose) console.log("Write file", path);
+      } catch (error) {
+        console.error(
+          "Failed to write description to file. File path:",
+          path,
+          error,
+        );
+        return;
+      } finally {
+        await exiftool.end();
+      }
+    } else {
+      if (verbose) console.log("Did not write");
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
   }
-  if (verbose) console.log("Imported provider:", provider);
-
-  const description = await module?.getDescription?.({
-    buffer,
-    model,
-    prompt,
-  });
-
-  if (verbose) console.log("Description is:", description);
-
-  if (description && !dry) {
-    await exiftool.write(
-      path,
-      Object.fromEntries(tags.map((t) => [t, description])),
-    );
-    if (verbose) console.log("Write file", path);
-    await exiftool.end();
-  } else {
-    if (verbose) console.log("Did not write");
-  }
-
-  return;
 }
