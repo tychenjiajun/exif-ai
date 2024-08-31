@@ -38,4 +38,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         
       - name: Publish
-        run: pnpm publish --tag latest--access=public
+        run: pnpm publish --tag latest --access=public
