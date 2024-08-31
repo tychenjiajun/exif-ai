@@ -8,7 +8,7 @@ import { WriteTags } from "exiftool-vendored";
 const program = new Command();
 
 program
-  .version("1.0.1")
+  .version("1.0.2")
   .description("A CLI for writing AI-generated image description to metadata.")
   .option("-i, --input <value>", "Input file path (required)")
   .option("-a, --api-provider <value>", "Set API Provider (required)")
