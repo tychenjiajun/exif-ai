@@ -1,0 +1,41 @@
+{
+  "name": "exif-ai",
+  "version": "1.0.0",
+  "description": "Write AI-generated image description to metadata.",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "bin": "./dist/cli.js",
+  "keywords": [
+    "ai",
+    "exif",
+    "image",
+    "jpeg",
+    "jpg",
+    "photo"
+  ],
+  "author": {
+    "name": "Jiajun Chen",
+    "email": "tychenjiajun@live.cn"
+  },
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "exiftool-vendored": "^28.2.1",
+    "figlet": "^1.7.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.5.8",
+    "@types/node": "^22.5.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}
