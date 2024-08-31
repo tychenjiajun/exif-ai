@@ -32,6 +32,10 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - run: pnpm publish
+      - name: Set publishing config
+        run: pnpm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        
+      - name: Publish
+        run: pnpm publish --tag latest --filter bootstrap-vue-3 --access=public
