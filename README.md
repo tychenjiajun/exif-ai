@@ -12,8 +12,11 @@ npm install -g exif-ai
 
 ## API Providers
 
-Exif AI requires an API provider to generate description from image. Currently only Zhipu
- AI is supported. You should have a Zhipu AI key before using Exif AI.
+Exif AI requires an API provider to generate description from image. Currently we have only one builtin provider ZhipuAI.
+You should have a ZhipuAI API
+ key before using Exif AI.
+
+You can also build your own provider by implementing the provider interface.
 
 ## Develop
 
