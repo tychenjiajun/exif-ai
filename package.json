@@ -1,6 +1,6 @@
 {
   "name": "exif-ai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write AI-generated image description to metadata.",
   "scripts": {
     "build": "tsc",

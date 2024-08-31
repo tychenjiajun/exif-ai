@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 import sharp from "sharp";
 
-async function sizeHandle(buffer: Buffer, quality = 100, drop = 2) {
+async function sizeHandle(
+  buffer: Buffer,
+  quality = 100,
+  drop = 2,
+): Promise<Buffer> {
   const sharpInstance = await sharp(buffer);
   const { width = 0, height = 0 } = await sharpInstance.metadata();
-  const done = await sharp(buffer)
+  let done = await sharp(buffer)
     .resize({
       ...(width > height ? { width: 6000 } : { height: 6000 }),
       withoutEnlargement: true,
@@ -14,13 +18,21 @@ async function sizeHandle(buffer: Buffer, quality = 100, drop = 2) {
     })
     .toBuffer();
 
-  if (done.byteLength > 5_000_000) {
-    return sizeHandle(buffer, quality - drop);
+  while (done.byteLength > 5_000_000) {
+    quality = Math.max(quality - drop, 0);
+    done = await sharp(buffer)
+      .resize({
+        ...(width > height ? { width: 6000 } : { height: 6000 }),
+        withoutEnlargement: true,
+      })
+      .jpeg({
+        quality,
+      })
+      .toBuffer();
   }
 
   return done;
 }
-
 export async function getDescription({
   buffer,
   model = "glm-4v-plus",
@@ -30,43 +42,50 @@ export async function getDescription({
   model?: string;
   prompt: string;
 }) {
-  const handled = await sizeHandle(buffer);
-
-  const data = await fetch(
-    "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + process.env.ZHIPUAI_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "image_url",
-                image_url: {
-                  url: Buffer.from(handled).toString("base64"),
+  try {
+    const handled = await sizeHandle(buffer);
+    const response = await fetch(
+      "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + process.env.ZHIPUAI_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: Buffer.from(handled).toString("base64"),
+                  },
                 },
-              },
-              {
-                type: "text",
-                text: prompt,
-              },
-            ],
-          },
-        ],
-        temperature: 0.5,
-      }),
-    },
-  ).then((res) => res.json());
-
-  if ("choices" in data) {
-    return data.choices.at(-1)?.message.content;
-  } else {
-    return;
+                {
+                  type: "text",
+                  text: prompt,
+                },
+              ],
+            },
+          ],
+          temperature: 0.5,
+        }),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data = await response.json();
+    if ("choices" in data) {
+      return data.choices.at(-1)?.message.content;
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.error("An error occurred while getting the description:", error);
+    throw error; // Re-throw the error to be handled by the caller
   }
 }

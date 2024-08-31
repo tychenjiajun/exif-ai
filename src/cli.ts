@@ -8,10 +8,10 @@ import { WriteTags } from "exiftool-vendored";
 const program = new Command();
 
 program
-  .version("1.0.0")
+  .version("1.0.1")
   .description("A CLI for writing AI-generated image description to metadata.")
-  .option("-i, --input <value>", "Input file path")
-  .option("-a, --api-provider <value>", "Set API Provider")
+  .option("-i, --input <value>", "Input file path (required)")
+  .option("-a, --api-provider <value>", "Set API Provider (required)")
   .option("-p, --prompt [value]", "API Prompt")
   .option("-m, --model [value]", "Set model")
   .option("-t, --tags [value...]", "Exif Tag Names")
@@ -20,8 +20,7 @@ program
     "-d, --dry-run",
     "Get description only. Do not write exif tags to file.",
   )
-  .parse(process.argv);
-
+  .parse();
 const options = program.opts();
 
 console.log(figlet.textSync("Exif AI"));
