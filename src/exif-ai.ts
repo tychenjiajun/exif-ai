@@ -7,7 +7,7 @@ import { WriteTags } from "exiftool-vendored";
 const program = new Command();
 
 program
-  .version("1.1.0")
+  .version("1.1.1")
   .description(
     "A Node.js CLI that uses Ollama or ZhipuAI to intelligently write image description to exif metadata by it's content.",
   )
