@@ -1,6 +1,6 @@
 {
   "name": "exif-ai",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Node.js CLI and library that uses Ollama or ZhipuAI to intelligently write image description to exif metadata by it's content.",
   "scripts": {
     "build": "tsc",
