@@ -14,16 +14,13 @@ importers:
       exiftool-vendored:
         specifier: ^28.2.1
         version: 28.2.1
-      figlet:
-        specifier: ^1.7.0
-        version: 1.7.0
+      ollama:
+        specifier: ^0.5.8
+        version: 0.5.8
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
     devDependencies:
-      '@types/figlet':
-        specifier: ^1.5.8
-        version: 1.5.8
       '@types/node':
         specifier: ^22.5.1
         version: 22.5.1
@@ -159,9 +156,6 @@ packages:
   '@photostructure/tz-lookup@10.0.0':
     resolution: {integrity: sha512-8ZAjoj/irCuvUlyEinQ/HB6A8hP3bD1dgTOZvfl1b9nAwqniutFDHOQRcGM6Crea68bOwPj010f0Z4KkmuLHEA==}
 
-  '@types/figlet@1.5.8':
-    resolution: {integrity: sha512-G22AUvy4Tl95XLE7jmUM8s8mKcoz+Hr+Xm9W90gJsppJq9f9tHvOGkrpn4gRX0q/cLtBdNkWtWCKDg2UDZoZvQ==}
-
   '@types/luxon@3.4.2':
     resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
 
@@ -205,11 +199,6 @@ packages:
   exiftool-vendored@28.2.1:
     resolution: {integrity: sha512-D3YsKErr3BbjKeJzUVsv6CVZ+SQNgAJKPFWVLXu0CBtr24FNuE3CZBXWKWysGu0MjzeDCNwQrQI5+bXUFeiYVA==}
 
-  figlet@1.7.0:
-    resolution: {integrity: sha512-gO8l3wvqo0V7wEFLXPbkX83b7MVjRrk1oRLfYlZXol8nEpb/ON9pcKLI4qpBv5YtOTfrINtqb7b40iYY2FTWFg==}
-    engines: {node: '>= 0.4.0'}
-    hasBin: true
-
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
@@ -220,6 +209,9 @@ packages:
   luxon@3.5.0:
     resolution: {integrity: sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==}
     engines: {node: '>=12'}
+
+  ollama@0.5.8:
+    resolution: {integrity: sha512-frBGdfSV34i7JybLZUeyCYDx0CMyDiG4On8xOK+cNRWM04HImhoWgIMpF4p7vTkQumadbSxOteR7SZyKqNmOXg==}
 
   prettier@3.3.3:
     resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
@@ -248,6 +240,9 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  whatwg-fetch@3.6.20:
+    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
 
 snapshots:
 
@@ -333,8 +328,6 @@ snapshots:
 
   '@photostructure/tz-lookup@10.0.0': {}
 
-  '@types/figlet@1.5.8': {}
-
   '@types/luxon@3.4.2': {}
 
   '@types/node@22.5.1':
@@ -380,13 +373,15 @@ snapshots:
       exiftool-vendored.exe: 12.91.0
       exiftool-vendored.pl: 12.91.0
 
-  figlet@1.7.0: {}
-
   he@1.2.0: {}
 
   is-arrayish@0.3.2: {}
 
   luxon@3.5.0: {}
+
+  ollama@0.5.8:
+    dependencies:
+      whatwg-fetch: 3.6.20
 
   prettier@3.3.3: {}
 
@@ -428,3 +423,5 @@ snapshots:
   typescript@5.5.4: {}
 
   undici-types@6.19.8: {}
+
+  whatwg-fetch@3.6.20: {}

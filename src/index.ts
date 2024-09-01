@@ -2,6 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { exiftool, WriteTags } from "exiftool-vendored";
 import { resolve } from "node:path";
+
 export async function execute({
   path,
   provider,
@@ -10,6 +11,8 @@ export async function execute({
   prompt = "请使用中文描述这个图片。",
   verbose = false,
   dry = false,
+  writeArgs,
+  providerArgs,
 }: {
   path: string;
   provider: string;
@@ -18,6 +21,8 @@ export async function execute({
   prompt?: string;
   verbose?: boolean;
   dry?: boolean;
+  writeArgs?: string[];
+  providerArgs?: string[];
 }) {
   const anotherFile = resolve(path);
 
@@ -48,6 +53,7 @@ export async function execute({
         buffer,
         model,
         prompt,
+        providerArgs,
       });
     } catch (error) {
       console.error(
@@ -63,6 +69,9 @@ export async function execute({
         await exiftool.write(
           path,
           Object.fromEntries(tags.map((t) => [t, description])),
+          {
+            writeArgs,
+          },
         );
         if (verbose) console.log("Write file", path);
       } catch (error) {
@@ -76,6 +85,7 @@ export async function execute({
         await exiftool.end();
       }
     } else {
+      if (description) console.log(description);
       if (verbose) console.log("Did not write");
     }
   } catch (error) {

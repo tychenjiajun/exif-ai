@@ -4,3 +4,4 @@ pnpm-lock.yaml
 renovate.json
 .gitignore
 .github/**/*
+.prettierrc
