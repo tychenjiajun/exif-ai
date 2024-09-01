@@ -53,16 +53,17 @@ To use Exif AI as a library in your project, import it and use the provided func
 import { execute } from "exif-ai";
 
 const options = {
-  path: "example.jpeg",
-  provider: "ollama",
-  model: "moondream", // Optional: specify the model if required by the provider
-  tags: ["XPComment", "Description", "ImageDescription", "Caption-Abstract"], // Optional: specify the EXIF tags to write
-  prompt: "请使用中文描述这个图片。", // Optional: specify the prompt for the AI provider
-  verbose: false, // Optional: enable verbose logging
-  dry: false, // Optional: perform a dry run without writing to the file
-  writeArgs: [], // Optional: additional arguments for EXIF write task
-  providerArgs: [], // Optional: additional arguments for the AI provider
+  path: "example.jpeg", // Path to the input image file
+  provider: "ollama", // AI provider to use (e.g., 'ollama', 'zhipu')
+  model: "moondream", // Optional: Specific AI model to use (if supported by the provider)
+  tags: ["XPComment", "Description", "ImageDescription", "Caption-Abstract"], // Optional: EXIF tags to write the description to
+  prompt: "请使用中文描述这个图片。", // Optional: Custom prompt for the AI provider
+  verbose: false, // Optional: Enable verbose logging for debugging
+  dry: false, // Optional: Perform a dry run without writing to the file
+  writeArgs: [], // Optional: Additional arguments for EXIF write task
+  providerArgs: [], // Optional: Additional arguments for the AI provider
 };
+
 execute(options)
   .then(() => {
     console.log("Image description has been written to EXIF metadata.");
