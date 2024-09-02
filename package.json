@@ -1,10 +1,20 @@
 {
   "name": "exif-ai",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A Node.js CLI and library that uses Ollama or ZhipuAI to intelligently write image description to exif metadata by it's content.",
+  "homepage": "https://github.com/tychenjiajun/exif-ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tychenjiajun/exif-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tychenjiajun/exif-ai/issues"
+  },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch"
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rimraf dist",
+    "watch": "tsc --watch -p tsconfig.build.json",
+    "test": "vitest"
   },
   "engines": {
     "node": ">=18"
@@ -36,14 +46,23 @@
   },
   "license": "GPL-2.0-only",
   "dependencies": {
+    "chokidar": "^3.6.0",
     "commander": "^12.1.0",
     "exiftool-vendored": "^28.2.1",
     "ollama": "^0.5.8",
     "sharp": "^0.33.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@types/node": "^22.5.1",
+    "eslint": "^9.9.1",
+    "eslint-plugin-n": "^17.10.2",
+    "eslint-plugin-promise": "^7.1.0",
+    "eslint-plugin-unicorn": "^55.0.0",
+    "globals": "^15.9.0",
     "prettier": "^3.3.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.3.0",
+    "vitest": "^2.0.5"
   }
 }

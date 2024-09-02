@@ -1,5 +1,9 @@
 # Exif AI
 
+![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)
+
+## About
+
 _Exif AI_ is a powerful CLI tool designed to write AI-generated image descriptions directly into the metadata of image files. This tool leverages advanced AI models to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
 
 ## Usage Example
@@ -26,18 +30,20 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-i, --input <value>` Path to the input image file.
 - `-a, --api-provider <value>` Name of the AI provider to use (`ollama` for Ollama or `zhipu` for ZhipuAI).
 
 Optional options:
 
-- `-p, --prompt [value]`: Custom prompt for the AI provider. Defaults to a generic image description prompt.
-- `-m, --model [value]`: Specify the AI model to use, if supported by the provider.
-- `-t, --tags [value...]`: EXIF tags to write the description to. Defaults to common description tags.
+- `-i, --input <file>` Path to the input image file.
+- `-p, --prompt <text>`: Custom prompt for the AI provider. Defaults to a generic image description prompt.
+- `-m, --model <name>`: Specify the AI model to use, if supported by the provider.
+- `-t, --tags <tags...>`: EXIF tags to write the description to. Defaults to common description tags.
 - `-v, --verbose`: Enable verbose output for debugging.
 - `-d, --dry-run`: Preview the AI-generated description without writing to the image file.
-- `--exif-tool-write-args [value...]`: Additional ExifTool arguments for writing metadata.
-- `--provider-args [value...]`: Additional arguments for the AI provider.
+- `--exif-tool-write-args <args...>`: Additional ExifTool arguments for writing metadata.
+- `--provider-args <args...>`: Additional arguments for the AI provider.
+- `-w, --watch <path>`: Watch directory for new files to process.
+- `-s, --skip`: Skip if EXIF tags already exist in the file.
 
 Example usage:
 
@@ -62,6 +68,8 @@ const options = {
   dry: false, // Optional: Perform a dry run without writing to the file
   writeArgs: [], // Optional: Additional arguments for EXIF write task
   providerArgs: [], // Optional: Additional arguments for the AI provider
+  skip: false, // Optional: Skip if EXIF tags already exist in the file
+  watch: false, // Optional: Watch directory for new files to process
 };
 
 execute(options)
@@ -87,8 +95,8 @@ Exif AI relies on API providers to generate image descriptions. Currently, we su
 
 ### Supported Providers
 
-ZhipuAI: A leading AI service provider. Requires an API key.
-Ollama: A local AI service that runs on your machine, eliminating the need for an API key.
+- ZhipuAI: A leading AI service provider. Requires an API key.
+- Olama: A local AI service that runs on your machine, eliminating the need for an API key.
 
 ### Custom Providers
 
