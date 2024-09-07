@@ -35,7 +35,7 @@ const program = new Command();
 const options = program.opts();
 
 program
-  .version("2.0.0")
+  .version("2.0.1")
   .description(getText("description") ?? "")
   .requiredOption("-a, --api-provider <name>", getText("api-provider"))
   .option("-i, --input <file>", getText("input"))
