@@ -1,76 +1,82 @@
 #!/usr/bin/env node
+
 import { Command } from "commander";
 import { execute } from "./index.js";
 import { WriteTags } from "exiftool-vendored";
 import { watch } from "chokidar";
+import { existsSync } from "node:fs";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
+import { getText } from "./fluent/index.js";
+
+async function findFilesRecursive(
+  dir: string,
+  ext: string[],
+): Promise<string[]> {
+  const files: string[] = [];
+  const items = await readdir(dir, { withFileTypes: true });
+  for (const item of items) {
+    const fullPath = join(dir, item.name);
+    if (item.isDirectory()) {
+      const subFiles = await findFilesRecursive(fullPath, ext);
+      files.push(...subFiles);
+    } else if (
+      item.isFile() &&
+      (!ext || ext.some((e) => fullPath.endsWith(e)))
+    ) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
 
 const program = new Command();
 
-program
-  .version("1.2.0")
-  .description(
-    "A Node.js CLI that uses Ollama or ZhipuAI to intelligently write image description to exif metadata by it's content.",
-  )
-  .requiredOption(
-    "-a, --api-provider <name>",
-    "Name of the AI provider to use ('ollama' for Ollama or 'zhipu' for ZhipuAI).",
-  )
-  .option("-i, --input <file>", "Path to the input image file.")
-  .option(
-    "-p, --prompt <text>",
-    "Custom prompt for the AI provider. Defaults to a generic image description prompt.",
-  )
-  .option(
-    "-m, --model <name>",
-    "Specify the AI model to use, if supported by the provider.",
-  )
-  .option(
-    "-t, --tags <tags...>",
-    "EXIF tags to write the description to. Defaults to common description tags.",
-  )
-  .option("-v, --verbose", "Enable verbose output for debugging.")
-  .option(
-    "-d, --dry-run",
-    "Preview the AI-generated description without writing to the image file.",
-  )
-  .option(
-    "--exif-tool-write-args <args...>",
-    "Additional ExifTool arguments for writing metadata.",
-  )
-  .option(
-    "--provider-args <args...>",
-    "Additional arguments for the AI provider.",
-  )
-  .option("-w, --watch <path>", "Watch directory for new files to process.")
-  .option("-s, --skip", "Skip if EXIF tags already exist in the file.")
-  .parse();
-
 const options = program.opts();
+
+program
+  .version("2.0.0")
+  .description(getText("description") ?? "")
+  .requiredOption("-a, --api-provider <name>", getText("api-provider"))
+  .option("-i, --input <file>", getText("input"))
+  .option("-p, --prompt <text>", getText("prompt"))
+  .option("-m, --model <name>", getText("model"))
+  .option("-t, --tags <tags...>", getText("tags"))
+  .option("-v, --verbose", getText("verbose"))
+  .option("-d, --dry-run", getText("dry-run"))
+  .option("--exif-tool-write-args <args...>", getText("exif-tool-write-args"))
+  .option("--provider-args <args...>", getText("provider-args"))
+  .option("-w, --watch <path>", getText("watch"))
+  .option("--avoid-overwrite", getText("avoid-overwrite"))
+  .option("--ext <extensions...>", getText("ext"))
+  .parse();
 const watchMode = options.watch;
 
 function logVerbose(...message: unknown[]) {
   if (options.verbose) console.log(message);
 }
 
-function handleExecution(path: string) {
-  execute({
-    path,
-    provider: options.apiProvider,
-    model: options.model,
-    tags: options.tags as Exclude<
-      Extract<keyof WriteTags, string>,
-      "AllDates" | "Orientation#" | "History+" | "Versions+"
-    >[],
-    prompt: options.prompt,
-    verbose: options.verbose as boolean,
-    dry: options.dryRun as boolean,
-    writeArgs: options.exifToolWriteArgs,
-    providerArgs: options.providerArgs,
-    skip: options.skip as boolean,
-  }).catch((error) => {
-    console.error("An error occurred:", error.message);
-    process.exit(1);
-  });
+async function handleExecution(path: string) {
+  try {
+    await execute({
+      path,
+      provider: options.apiProvider,
+      model: options.model,
+      tags: options.tags as Exclude<
+        Extract<keyof WriteTags, string>,
+        "AllDates" | "Orientation#" | "History+" | "Versions+"
+      >[],
+      prompt: options.prompt,
+      verbose: options.verbose as boolean,
+      dry: options.dryRun as boolean,
+      writeArgs: options.exifToolWriteArgs,
+      providerArgs: options.providerArgs,
+      avoidOverwrite: options.avoidOverwrite as boolean,
+      doNotEndExifTool: Boolean(watchMode),
+    });
+  } catch (error) {
+    console.error(`Error processing file ${path}:`, error);
+  }
 }
 
 if (options.verbose) {
@@ -81,14 +87,35 @@ if (watchMode) {
   const pathToWatch = watchMode === true ? "./" : watchMode;
   logVerbose(`Watching directory: ${pathToWatch}`);
 
+  // Process files in `pathToWatch` recursively
+  const files = await findFilesRecursive(pathToWatch, options.ext);
+
+  // Process all files concurrently
+  await Promise.all(files.map((file) => handleExecution(file)));
+
   watch(pathToWatch, {
     persistent: true,
     ignoreInitial: true,
+    ignored: (path) => {
+      return !options.ext.some((ext: string) => path.endsWith(ext));
+    },
+    awaitWriteFinish: {
+      stabilityThreshold: 2000, // Wait for 2 seconds after a file is modified
+    },
   }).on("add", (path) => {
     logVerbose(`New file detected: ${path}`);
     handleExecution(path);
   });
 } else {
-  
+  if (!options.input) {
+    console.error(
+      "No input file specified. Please provide an input file using the -i option.",
+    );
+    process.exit(1);
+  }
+  if (!existsSync(options.input)) {
+    console.error(`Input file does not exist: ${options.input}`);
+    process.exit(1);
+  }
   handleExecution(options.input);
 }

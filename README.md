@@ -1,6 +1,6 @@
 # Exif AI
 
-![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)
+[![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)](https://www.npmjs.com/package/exif-ai)
 
 ## About
 
@@ -43,7 +43,8 @@ Optional options:
 - `--exif-tool-write-args <args...>`: Additional ExifTool arguments for writing metadata.
 - `--provider-args <args...>`: Additional arguments for the AI provider.
 - `-w, --watch <path>`: Watch directory for new files to process.
-- `-s, --skip`: Skip if EXIF tags already exist in the file.
+- `--avoid-overwrite`: Avoid overwriting if EXIF tags already exist in the file.
+- `--ext <extensions...>`: File extensions to watch. Only files with this extensions will be processed.
 
 Example usage:
 
@@ -68,8 +69,7 @@ const options = {
   dry: false, // Optional: Perform a dry run without writing to the file
   writeArgs: [], // Optional: Additional arguments for EXIF write task
   providerArgs: [], // Optional: Additional arguments for the AI provider
-  skip: false, // Optional: Skip if EXIF tags already exist in the file
-  watch: false, // Optional: Watch directory for new files to process
+  avoidOverwrite: true,
 };
 
 execute(options)
@@ -96,7 +96,7 @@ Exif AI relies on API providers to generate image descriptions. Currently, we su
 ### Supported Providers
 
 - ZhipuAI: A leading AI service provider. Requires an API key.
-- Olama: A local AI service that runs on your machine, eliminating the need for an API key.
+- Ollama: A local AI service that runs on your machine, eliminating the need for an API key.
 
 ### Custom Providers
 
@@ -106,7 +106,7 @@ You can also develop your own custom provider by implementing the provider inter
 
 ### Setting API Keys (for ZhipuAI)
 
-To use ZhipuAI, you need to set the API key. You can do this by setting an environment variable:
+To use [ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys), you need to set the API key. You can do this by setting an environment variable:
 
 ```bash
 export ZHIPUAI_API_KEY=your_zhipuai_api_key

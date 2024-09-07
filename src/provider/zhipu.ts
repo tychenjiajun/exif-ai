@@ -33,14 +33,15 @@ async function sizeHandle(
 
   return done;
 }
+
 export async function getDescription({
   buffer,
   model = "glm-4v-plus",
-  prompt,
+  prompt = "请使用中文描述这个图片。",
 }: {
   buffer: Buffer;
   model?: string;
-  prompt: string;
+  prompt?: string;
 }) {
   try {
     const handled = await sizeHandle(buffer);

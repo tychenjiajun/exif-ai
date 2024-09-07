@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": "./",
     "outDir": "dist",
     "strict": true,
-    "target": "es2017",
+    "target": "es2021",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "sourceMap": true,
