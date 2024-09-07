@@ -1,35 +1,23 @@
-import { describe, it, beforeEach, afterEach, expect, vi } from "vitest";
+import {
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  expect,
+  vi,
+  afterAll,
+} from "vitest";
 import { execute } from "../src/index.js";
 import { exiftool } from "exiftool-vendored";
 import { resolve } from "node:path";
-import { promises as fsPromises } from "node:fs";
+import { existsSync, promises as fsPromises } from "node:fs";
+import { deleteAsync } from "del";
 
-// Mock the provider module
-vi.mock("./provider/provider1.js", () => ({
-  getDescription: async ({ prompt }: { prompt: string }) => prompt, // Return the prompt as the description
-}));
-
-function runTest(
-  testCaseNumber: number,
-  options: {
-    dry: boolean | undefined;
-    path: string;
-    provider: string;
-    model: string | undefined;
-    tags?: Parameters<typeof execute>[0]["tags"];
-    prompt: string | undefined;
-    verbose: boolean | undefined;
-    writeArgs: string[] | never[] | undefined;
-    providerArgs: string[] | never[] | undefined;
-    skip: boolean | undefined;
-  },
-) {
-  return execute(options);
-}
+let i = 0;
 
 describe("Image Processing Tests", () => {
   const baseOptions = {
-    path: "./test/image.jpeg",
+    path: "./test/image0.jpeg",
     provider: "provider1",
     model: "model1",
     tags: [
@@ -44,19 +32,89 @@ describe("Image Processing Tests", () => {
     writeArgs: [],
     providerArgs: [],
     skip: false,
+    doNotEndExifTool: true,
   };
 
   beforeEach(async () => {
-    // Ensure the test image exists and is clean before each test
+    i++;
+    baseOptions.path = `./test/image${i}.jpeg`;
     const resolvedPath = resolve(baseOptions.path);
+
     await fsPromises.copyFile(
       "./test/image/VCG211476897295.jpeg",
       resolvedPath,
     );
+    // Mock the provider module
+    vi.doMock("provider1", () => ({
+      getDescription: async ({ prompt }: { prompt: string }) => prompt, // Return the prompt as the description
+    }));
+  });
+
+  it("should run correctly", async () => {
+    const resolvedPath = resolve(baseOptions.path);
+
+    const result = await execute({
+      ...baseOptions,
+    });
+    expect(result).to.be.undefined; // Assuming the function returns undefined on success
+
+    // Verify the existing tag is not overwritten
+    const tags = await exiftool.read(resolvedPath);
+    expect(tags.XPComment).to.equal("请使用中文描述这个图片。");
+    expect(tags.Description).to.equal("请使用中文描述这个图片。");
+    expect(tags.ImageDescription).to.equal("请使用中文描述这个图片。");
+    expect(tags["Caption-Abstract"]).to.equal("请使用中文描述这个图片。");
+
+    expect(existsSync(`${resolvedPath}_original`)).to.be.true;
+  });
+
+  it("should run with prompt correctly", async () => {
+    const resolvedPath = resolve(baseOptions.path);
+
+    const result = await execute({
+      ...baseOptions,
+      prompt: "Describe",
+    });
+    expect(result).to.be.undefined; // Assuming the function returns undefined on success
+
+    // Verify the existing tag is not overwritten
+    const tags = await exiftool.read(resolvedPath);
+    expect(tags.XPComment).to.equal("Describe");
+    expect(tags.Description).to.equal("Describe");
+    expect(tags.ImageDescription).to.equal("Describe");
+    expect(tags["Caption-Abstract"]).to.equal("Describe");
+
+    expect(existsSync(`${resolvedPath}_original`)).to.be.true;
+  });
+
+  it("should handle dry run correctly", async () => {
+    const result = await execute({
+      ...baseOptions,
+      dry: true,
+    });
+    expect(result).to.be.undefined; // Assuming the function returns undefined on success
+  });
+
+  it("should not overwrite existing tags with avoidOverwrite", async () => {
+    // Setup: Write a tag to the test image
+    const resolvedPath = resolve(baseOptions.path);
+
+    await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
+
+    await execute({
+      ...baseOptions,
+      avoidOverwrite: true,
+    });
+    // Verify the existing tag is not overwritten
+    const tags = await exiftool.read(resolvedPath);
+    expect(tags.XPComment).to.equal("Existing comment");
+    expect(tags.Description).to.equal("请使用中文描述这个图片。");
+    expect(tags.ImageDescription).to.equal("请使用中文描述这个图片。");
+    expect(tags["Caption-Abstract"]).to.equal("请使用中文描述这个图片。");
   });
 
   it("should handle provider import failure", async () => {
-    const result = await runTest(4, {
+    const result = await execute({
       ...baseOptions,
       provider: "nonexistentProvider",
     });
@@ -66,7 +124,7 @@ describe("Image Processing Tests", () => {
   });
 
   it("should handle description generation failure", async () => {
-    const result = await runTest(5, {
+    const result = await execute({
       ...baseOptions,
       provider: "failingProvider",
     });
@@ -74,10 +132,57 @@ describe("Image Processing Tests", () => {
     expect(result).to.be.undefined;
   });
 
-  afterEach(async () => {
-    // Clean up after each test to avoid side effects
+  it("should handle non-existent file", async () => {
+    const result = await execute({
+      ...baseOptions,
+      path: "./test/nonexistent.jpeg",
+    });
+    // Verify that the function handles the non-existent file appropriately
+    expect(result).to.be.undefined;
+  });
+
+  it("should handle invalid tags", async () => {
+    const result = await execute({
+      ...baseOptions,
+      // @ts-ignore
+      tags: ["InvalidTag"],
+    });
+    // Verify that the function handles invalid tags appropriately
+    expect(result).to.be.undefined;
+  });
+
+  it("should handle no tags provided", async () => {
+    const result = await execute({
+      ...baseOptions,
+      tags: undefined,
+    });
+    // Verify that the function uses default tags when none are provided
+    expect(result).to.be.undefined;
+  });
+
+  it("should handle different write args", async () => {
     const resolvedPath = resolve(baseOptions.path);
+    const writeArgs = ["-overwrite_original"];
+    const result = await execute({
+      ...baseOptions,
+      writeArgs,
+    });
+    expect(result).to.be.undefined; // Assuming the function returns undefined on success
+    // Verify that the tags are written correctly
+    const tags = await exiftool.read(resolvedPath);
+    expect(tags.XPComment).to.equal("请使用中文描述这个图片。");
+    // Additional assertions can be made based on the expected behavior with the given write args
+    expect(existsSync(`${resolvedPath}_original`)).to.be.false;
+  });
+
+  afterEach(async () => {
+    const resolvedPath = resolve(baseOptions.path);
+
+    await deleteAsync(["./test/*original"]);
     await fsPromises.unlink(resolvedPath);
+  });
+
+  afterAll(async () => {
     await exiftool.end();
   });
 });

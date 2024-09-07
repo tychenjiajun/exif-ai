@@ -4,11 +4,11 @@ import ollama from "ollama";
 export async function getDescription({
   buffer,
   model = "moondream",
-  prompt,
+  prompt = "Describe image.",
 }: {
   buffer: Buffer;
   model?: string;
-  prompt: string;
+  prompt?: string;
 }) {
   try {
     const response = await ollama.chat({

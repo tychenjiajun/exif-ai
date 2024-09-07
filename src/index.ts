@@ -1,19 +1,23 @@
-#!/usr/bin/env node
 import { readFile } from "node:fs/promises";
 import { exiftool, WriteTags } from "exiftool-vendored";
 import { resolve } from "node:path";
+import { env } from "node:process";
+import ISO6391 from "iso-639-1";
+
+const lang = env.LANG?.slice(0, 2);
 
 export async function execute({
   path,
   provider,
   model,
   tags = ["XPComment", "Description", "ImageDescription", "Caption-Abstract"],
-  prompt = "请使用中文描述这个图片。",
+  prompt = `Describe image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"}`,
   verbose = false,
   dry = false,
   writeArgs,
   providerArgs,
-  skip = false,
+  avoidOverwrite = false,
+  doNotEndExifTool = false,
 }: {
   path: string;
   provider: string;
@@ -27,42 +31,38 @@ export async function execute({
   dry?: boolean;
   writeArgs?: string[];
   providerArgs?: string[];
-  skip?: boolean;
+  avoidOverwrite?: boolean;
+  doNotEndExifTool?: boolean;
 }) {
   const resolvedPath = resolve(path);
 
   try {
-    if (skip) {
-      // Read the file to check existing EXIF tags
-      const existingTags = await exiftool.read(resolvedPath);
-
-      // Check if any of the tags to be written already exist
-      const tagExists = tags.every((tag) => existingTags[tag]);
-      if (tagExists) {
-        if (verbose)
-          console.log("Skipping description generation, tag already exists.");
-        return; // Exit the function early if skip is true and tag exists
-      }
-    }
-
+    // Read the file once to get the buffer and existing tags
     const buffer = await readFile(resolvedPath);
+
     if (verbose) console.log("Read file from", resolvedPath);
 
+    // Check existing EXIF tags only if avoidOverwrite is true
+    let existingTags = avoidOverwrite ? await exiftool.read(resolvedPath) : {};
+
+    // Import provider module
     let providerModule;
     try {
       providerModule = await import(`./provider/${provider}.js`);
     } catch (error) {
-      console.error("Failed to import provider module", error);
-      return;
+      try {
+        providerModule = await import(`${provider}`);
+      } catch (error) {
+        console.error("Failed to import provider module", error);
+        return;
+      }
     }
-
     if (providerModule == null) {
       console.error("Import provider failed. Provider name:", provider);
       return;
     }
-
     if (verbose) console.log("Imported provider:", provider);
-
+    // Get description from provider
     let description;
     try {
       description = await providerModule.getDescription?.({
@@ -75,22 +75,26 @@ export async function execute({
       console.error("Failed to get description from provider:", error);
       return;
     }
-
     if (verbose) console.log("Description is:", description);
-
     if (description && !dry) {
-      try {
+      // Write description to EXIF tags, avoiding overwriting if necessary
+      const tagsToWrite = avoidOverwrite
+        ? tags.filter(
+            (tag) =>
+              existingTags[tag] == null ||
+              (typeof existingTags[tag] === "string" &&
+                existingTags[tag].trim() === ""),
+          )
+        : tags;
+      if (tagsToWrite.length > 0) {
         await exiftool.write(
           resolvedPath,
-          Object.fromEntries(tags.map((tag) => [tag, description])),
+          Object.fromEntries(tagsToWrite.map((tag) => [tag, description])),
           { writeArgs },
         );
         if (verbose) console.log("Wrote description to file:", resolvedPath);
-      } catch (error) {
-        console.error("Failed to write description to file:", error);
-        return;
-      } finally {
-        await exiftool.end();
+      } else {
+        if (verbose) console.log("No new tags to write, skipping.");
       }
     } else {
       if (description) console.log(description);
@@ -98,5 +102,9 @@ export async function execute({
     }
   } catch (error) {
     console.error("An error occurred:", error);
+  } finally {
+    if (doNotEndExifTool) return;
+    // Ensure ExifTool session is closed properly
+    await exiftool.end();
   }
 }
