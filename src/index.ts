@@ -6,11 +6,7 @@ import ISO6391 from "iso-639-1";
 // @ts-ignore
 import xhr2 from "xhr2";
 
-import fetch, {
-  Headers,
-  Request,
-  Response,
-} from "node-fetch";
+import fetch, { Headers, Request, Response } from "node-fetch";
 
 if (!globalThis.fetch) {
   // @ts-ignore
@@ -40,7 +36,7 @@ export async function execute({
   ],
   tagTags = ["Subject", "TagsList", "Keywords"],
   descriptionPrompt = `Describe image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"}`,
-  tagPrompt = `Tag this in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"} based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
+  tagPrompt = `Tag image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"} words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
   verbose = false,
   dry = false,
   writeArgs,
@@ -179,7 +175,8 @@ export async function execute({
 
     if (typeof tags === "string") {
       tags = tags
-        .replaceAll(/[\[\]\.{}<>]/g, "")
+        .replaceAll(/tag[0-9]+/g, "")
+        .replaceAll(/[\[\]\.{}<>/*\n]/g, "")
         .split(":")
         .at(-1)
         ?.split(",")
