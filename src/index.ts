@@ -194,7 +194,7 @@ export async function execute({
                   return [
                     t,
                     Array.isArray(existingTag)
-                      ? existingTag.concat(tags)
+                      ? Array.from(new Set(existingTag.concat(tags)))
                       : existingTag,
                   ];
                 }),

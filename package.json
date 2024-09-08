@@ -17,7 +17,7 @@
     "test": "vitest"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=16"
   },
   "man": [
     "./exif-ai.1"
@@ -48,11 +48,11 @@
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
     "chokidar": "^3.6.0",
-    "commander": "^12.1.0",
+    "commander": "11.1.0",
     "exiftool-vendored": "^28.2.1",
     "iso-639-1": "^3.1.3",
     "ollama": "^0.5.8",
-    "sharp": "^0.33.5"
+    "sharp": "0.32.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
