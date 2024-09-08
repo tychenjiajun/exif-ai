@@ -208,17 +208,23 @@ export async function execute({
         tags
           ? avoidOverwrite
             ? Object.fromEntries(
-                tagTags.map((t) => {
-                  const existingTag = existingTags[t];
-                  return [
-                    t,
-                    Array.isArray(existingTag)
-                      ? Array.from(new Set(existingTag.concat(tags)))
-                      : existingTag,
-                  ];
-                }),
+                tagTags
+                  .map((t) => {
+                    const existingTag = existingTags[t];
+                    return [
+                      t,
+                      Array.isArray(existingTag)
+                        ? Array.from(new Set(existingTag.concat(tags)))
+                        : existingTag,
+                    ];
+                  })
+                  .filter((k) => !Array.isArray(k[1]) || k[1].length > 0),
               )
-            : Object.fromEntries(tagTags.map((t) => [t, tags]))
+            : Object.fromEntries(
+                tagTags
+                  .map((t) => [t, Array.from(new Set(tags))])
+                  .filter((k) => !Array.isArray(k[1]) || k[1].length > 0),
+              )
           : {}
       ) as WriteTags;
 
