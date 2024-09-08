@@ -176,11 +176,12 @@ export async function execute({
     if (typeof tags === "string") {
       tags = tags
         .replaceAll(/tag[0-9]+/g, "")
-        .replaceAll(/[\[\]\.{}<>/*\n]/g, "")
+        .replaceAll(/[\[\]\.{}<>/*\n'"]/g, "")
         .split(":")
         .at(-1)
         ?.split(",")
-        .map((s) => s.trim());
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
     }
 
     if (dry) {
