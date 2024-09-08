@@ -90,3 +90,60 @@ export async function getDescription({
     throw error; // Re-throw the error to be handled by the caller
   }
 }
+
+export async function getTags({
+  buffer,
+  model = "glm-4v-plus",
+  prompt = "请根据图片中的场景、事件、地点、人数、出现的物体来给图片打标签。输出为 <tag1>, <tag2>, <tags>, …… , <tagN>",
+}: {
+  buffer: Buffer;
+  model?: string;
+  prompt?: string;
+}) {
+  try {
+    const handled = await sizeHandle(buffer);
+    const response = await fetch(
+      "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + process.env.ZHIPUAI_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: Buffer.from(handled).toString("base64"),
+                  },
+                },
+                {
+                  type: "text",
+                  text: prompt,
+                },
+              ],
+            },
+          ],
+          temperature: 0.5,
+        }),
+      },
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data = await response.json();
+    if ("choices" in data) {
+      return data.choices.at(-1)?.message.content;
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.error("An error occurred while getting the tags:", error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}

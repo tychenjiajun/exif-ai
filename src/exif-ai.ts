@@ -2,7 +2,6 @@
 
 import { Command } from "commander";
 import { execute } from "./index.js";
-import { WriteTags } from "exiftool-vendored";
 import { watch } from "chokidar";
 import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
@@ -22,26 +21,25 @@ async function findFilesRecursive(
       files.push(...subFiles);
     } else if (
       item.isFile() &&
-      (!ext || ext.some((e) => fullPath.endsWith(e)))
+      (!ext.length || ext.some((e) => fullPath.endsWith(e)))
     ) {
       files.push(fullPath);
     }
   }
   return files;
 }
-
 const program = new Command();
-
-const options = program.opts();
-
 program
-  .version("2.0.1")
+  .version("3.0.0")
   .description(getText("description") ?? "")
-  .requiredOption("-a, --api-provider <name>", getText("api-provider"))
-  .option("-i, --input <file>", getText("input"))
-  .option("-p, --prompt <text>", getText("prompt"))
-  .option("-m, --model <name>", getText("model"))
-  .option("-t, --tags <tags...>", getText("tags"))
+  .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
+  .option("-T, --tasks <tasks...>", getText("tasks"))
+  .option("-i, --input <path>", getText("input"))
+  .option("-p, --description-prompt <prompt>", getText("description-prompt"))
+  .option("--tag-prompt <prompt>", getText("tag-prompt"))
+  .option("-m, --model <model>", getText("model"))
+  .option("-t, --description-tags <tags...>", getText("description-tags"))
+  .option("--tag-tags <tag...>", getText("tag-tags"))
   .option("-v, --verbose", getText("verbose"))
   .option("-d, --dry-run", getText("dry-run"))
   .option("--exif-tool-write-args <args...>", getText("exif-tool-write-args"))
@@ -50,28 +48,29 @@ program
   .option("--avoid-overwrite", getText("avoid-overwrite"))
   .option("--ext <extensions...>", getText("ext"))
   .parse();
+
+const options = program.opts();
 const watchMode = options.watch;
 
 function logVerbose(...message: unknown[]) {
-  if (options.verbose) console.log(message);
+  if (options.verbose) console.log(...message);
 }
 
 async function handleExecution(path: string) {
   try {
     await execute({
+      tasks: options.tasks,
       path,
       provider: options.apiProvider,
       model: options.model,
-      tags: options.tags as Exclude<
-        Extract<keyof WriteTags, string>,
-        "AllDates" | "Orientation#" | "History+" | "Versions+"
-      >[],
-      prompt: options.prompt,
-      verbose: options.verbose as boolean,
-      dry: options.dryRun as boolean,
+      descriptionTags: options.descriptionTags,
+      tagTags: options.tagTags,
+      descriptionPrompt: options.descriptionPrompt,
+      verbose: options.verbose,
+      dry: options.dryRun,
       writeArgs: options.exifToolWriteArgs,
       providerArgs: options.providerArgs,
-      avoidOverwrite: options.avoidOverwrite as boolean,
+      avoidOverwrite: options.avoidOverwrite,
       doNotEndExifTool: Boolean(watchMode),
     });
   } catch (error) {
@@ -97,7 +96,10 @@ if (watchMode) {
     persistent: true,
     ignoreInitial: true,
     ignored: (path) => {
-      return !options.ext.some((ext: string) => path.endsWith(ext));
+      return (
+        !options.ext.length ||
+        !options.ext.some((ext: string) => path.endsWith(ext))
+      );
     },
     awaitWriteFinish: {
       stabilityThreshold: 2000, // Wait for 2 seconds after a file is modified

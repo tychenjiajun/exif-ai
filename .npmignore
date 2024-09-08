@@ -7,3 +7,4 @@ renovate.json
 .prettierrc
 test/**/*
 dist/test/**/*
+.vscode/**/*
