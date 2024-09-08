@@ -3,6 +3,27 @@ import { exiftool, WriteTags } from "exiftool-vendored";
 import { resolve } from "node:path";
 import { env } from "node:process";
 import ISO6391 from "iso-639-1";
+// @ts-ignore
+import xhr2 from "xhr2";
+
+import fetch, {
+  Headers,
+  Request,
+  Response,
+} from "node-fetch";
+
+if (!globalThis.fetch) {
+  // @ts-ignore
+  globalThis.fetch = fetch;
+  // @ts-ignore
+  globalThis.Headers = Headers;
+  // @ts-ignore
+  globalThis.Request = Request;
+  // @ts-ignore
+  globalThis.Response = Response;
+}
+
+if (global.XMLHttpRequest == null) global.XMLHttpRequest = xhr2;
 
 const lang = env.LANG?.slice(0, 2);
 
