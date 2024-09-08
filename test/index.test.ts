@@ -26,7 +26,7 @@ describe("Image Processing Tests", () => {
       "ImageDescription",
       "Caption-Abstract",
     ] as Parameters<typeof execute>[0]["descriptionTags"],
-    prompt: "请使用中文描述这个图片。",
+    prompt: "Describe image in English",
     verbose: true,
     dry: false,
     writeArgs: [],
@@ -60,10 +60,10 @@ describe("Image Processing Tests", () => {
 
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
-    expect(descriptionTags.XPComment).to.equal("请使用中文描述这个图片。");
-    expect(descriptionTags.Description).to.equal("请使用中文描述这个图片。");
-    expect(descriptionTags.ImageDescription).to.equal("请使用中文描述这个图片。");
-    expect(descriptionTags["Caption-Abstract"]).to.equal("请使用中文描述这个图片。");
+    expect(descriptionTags.XPComment).to.equal("Describe image in English");
+    expect(descriptionTags.Description).to.equal("Describe image in English");
+    expect(descriptionTags.ImageDescription).to.equal("Describe image in English");
+    expect(descriptionTags["Caption-Abstract"]).to.equal("Describe image in English");
 
     expect(existsSync(`${resolvedPath}_original`)).to.be.true;
   });
@@ -108,9 +108,9 @@ describe("Image Processing Tests", () => {
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Existing comment");
-    expect(descriptionTags.Description).to.equal("请使用中文描述这个图片。");
-    expect(descriptionTags.ImageDescription).to.equal("请使用中文描述这个图片。");
-    expect(descriptionTags["Caption-Abstract"]).to.equal("请使用中文描述这个图片。");
+    expect(descriptionTags.Description).to.equal("Describe image in English");
+    expect(descriptionTags.ImageDescription).to.equal("Describe image in English");
+    expect(descriptionTags["Caption-Abstract"]).to.equal("Describe image in English");
   });
 
   it("should handle provider import failure", async () => {
@@ -170,7 +170,7 @@ describe("Image Processing Tests", () => {
     expect(result).to.be.undefined; // Assuming the function returns undefined on success
     // Verify that the descriptionTags are written correctly
     const descriptionTags = await exiftool.read(resolvedPath);
-    expect(descriptionTags.XPComment).to.equal("请使用中文描述这个图片。");
+    expect(descriptionTags.XPComment).to.equal("Describe image in English");
     // Additional assertions can be made based on the expected behavior with the given write args
     expect(existsSync(`${resolvedPath}_original`)).to.be.false;
   });
