@@ -4,7 +4,7 @@
 
 ## About
 
-_Exif AI_ is a powerful CLI tool designed to write AI-generated image descriptions directly into the metadata of image files. This tool leverages advanced AI models to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
+_Exif AI_ is a powerful CLI tool designed to write AI-generated image descriptions and/or tags directly into the metadata of image files. This tool leverages advanced AI models to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
 
 ## Usage Example
 
@@ -34,12 +34,15 @@ Required options:
 
 Optional options:
 
+- `-T, --tasks <tasks...>`: List of tasks to perform ('description' and/or 'tag').
 - `-i, --input <file>` Path to the input image file.
-- `-p, --prompt <text>`: Custom prompt for the AI provider. Defaults to a generic image description prompt.
+- `-p, --description-prompt <text>`: Custom prompt for the AI provider to generate description. Defaults to a generic image description prompt.
+- `--tag-prompt <text>`: Custom prompt for the AI provider to generate tags. Defaults to a generic image tagging prompt.
 - `-m, --model <name>`: Specify the AI model to use, if supported by the provider.
-- `-t, --tags <tags...>`: EXIF tags to write the description to. Defaults to common description tags.
+- `-t, --description-tags <tags...>`: List of EXIF tags to write the description to. Defaults to common description tags.
+- `--tag-tags <tags...>`: List of EXIF tags to write the tags to. Defaults to common tags.
 - `-v, --verbose`: Enable verbose output for debugging.
-- `-d, --dry-run`: Preview the AI-generated description without writing to the image file.
+- `-d, --dry-run`: Preview AI-generated content without writing to the image file.
 - `--exif-tool-write-args <args...>`: Additional ExifTool arguments for writing metadata.
 - `--provider-args <args...>`: Additional arguments for the AI provider.
 - `-w, --watch <path>`: Watch directory for new files to process.
@@ -63,13 +66,21 @@ const options = {
   path: "example.jpeg", // Path to the input image file
   provider: "ollama", // AI provider to use (e.g., 'ollama', 'zhipu')
   model: "moondream", // Optional: Specific AI model to use (if supported by the provider)
-  tags: ["XPComment", "Description", "ImageDescription", "Caption-Abstract"], // Optional: EXIF tags to write the description to
-  prompt: "请使用中文描述这个图片。", // Optional: Custom prompt for the AI provider
+  descriptionTags: [
+    "XPComment",
+    "Description",
+    "ImageDescription",
+    "Caption-Abstract",
+  ], // Optional: EXIF tags to write the description to
+  tagTags: ["Subject", "TagsList", "Keywords"], // Optional: EXIF tags to write the tags to
+  descriptionPrompt: "请使用中文描述这个图片。", // Optional: Custom prompt for the AI provider to generate description
+  tagPrompt:
+    "Tag this image based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>", // Optional: Custom prompt for the AI provider to generate tags
   verbose: false, // Optional: Enable verbose logging for debugging
   dry: false, // Optional: Perform a dry run without writing to the file
   writeArgs: [], // Optional: Additional arguments for EXIF write task
   providerArgs: [], // Optional: Additional arguments for the AI provider
-  avoidOverwrite: true,
+  avoidOverwrite: true, // Optional: Avoid overwriting existing tags
 };
 
 execute(options)
