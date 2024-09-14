@@ -15,6 +15,9 @@ import { deleteAsync } from "del";
 
 let i = 0;
 
+const getDescription = vi.fn(async ({ prompt }: { prompt: string }) => prompt); // Return the prompt as the description
+const getTags = vi.fn(async ({ prompt }: { prompt: string }) => prompt); // Return the prompt as the tags
+
 describe("Image Processing Tests", () => {
   const baseOptions = {
     path: "./test/image0.jpeg",
@@ -46,7 +49,8 @@ describe("Image Processing Tests", () => {
     );
     // Mock the provider module
     vi.doMock("provider1", () => ({
-      getDescription: async ({ prompt }: { prompt: string }) => prompt, // Return the prompt as the description
+      getDescription,
+      getTags,
     }));
   });
 
@@ -136,6 +140,7 @@ describe("Image Processing Tests", () => {
       ...baseOptions,
       tasks: [],
     });
+
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Existing comment");
@@ -180,7 +185,7 @@ describe("Image Processing Tests", () => {
     await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
     await execute({
       ...baseOptions,
-      provider: 'invalid',
+      provider: "invalid",
     });
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
