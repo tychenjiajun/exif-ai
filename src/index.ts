@@ -153,7 +153,7 @@ export async function execute({
         ? getTags({
             buffer,
             model,
-            prompt: descriptionPrompt,
+            prompt: tagPrompt,
             providerArgs,
             providerModule,
             verbose,
