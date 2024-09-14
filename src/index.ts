@@ -137,26 +137,30 @@ export async function execute({
     if (verbose) console.log("Imported provider:", provider);
 
     const [description, tags] = await Promise.all([
-      getDescription({
-        buffer,
-        model,
-        prompt: descriptionPrompt,
-        providerArgs,
-        providerModule,
-        verbose,
-        descriptionTags,
-        existingTags,
-      }),
-      getTags({
-        buffer,
-        model,
-        prompt: descriptionPrompt,
-        providerArgs,
-        providerModule,
-        verbose,
-        tagTags,
-        existingTags,
-      }),
+      tasks.includes("description")
+        ? getDescription({
+            buffer,
+            model,
+            prompt: descriptionPrompt,
+            providerArgs,
+            providerModule,
+            verbose,
+            descriptionTags,
+            existingTags,
+          })
+        : undefined,
+      tasks.includes("tag") || tasks.includes("tags")
+        ? getTags({
+            buffer,
+            model,
+            prompt: descriptionPrompt,
+            providerArgs,
+            providerModule,
+            verbose,
+            tagTags,
+            existingTags,
+          })
+        : undefined,
     ]);
 
     if (dry) {
