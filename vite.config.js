@@ -11,6 +11,10 @@ const RemoveShebangPlugin = () => {
 };
 export default defineConfig({
   test: {
+    coverage: {
+      enabled: true,
+      provider: "istanbul", // or 'v8'
+    },
     environment: "node", // Since we're running Node.js-specific code
   },
   plugins: [RemoveShebangPlugin()],

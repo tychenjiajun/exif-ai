@@ -7,6 +7,8 @@ import ISO6391 from "iso-639-1";
 import xhr2 from "xhr2";
 
 import fetch, { Headers, Request, Response } from "node-fetch";
+import { DescriptionKey, getDescription } from "./tasks/description.js";
+import { getTags, TagKey } from "./tasks/tags.js";
 
 if (!globalThis.fetch) {
   // @ts-ignore
@@ -63,17 +65,11 @@ export async function execute({
   /**
    * List of EXIF tags to write the description to
    */
-  descriptionTags?: Exclude<
-    Extract<keyof WriteTags, string>,
-    "AllDates" | "Orientation#" | "History+" | "Versions+"
-  >[];
+  descriptionTags?: DescriptionKey[];
   /**
    * List of EXIF tags to write the tags to
    */
-  tagTags?: Exclude<
-    Extract<keyof WriteTags, string>,
-    "AllDates" | "Orientation#" | "History+" | "Versions+"
-  >[];
+  tagTags?: TagKey[];
   /**
    * Prompt to use for generating the description
    */
@@ -118,7 +114,9 @@ export async function execute({
     if (verbose) console.log("Read file from", resolvedPath);
 
     // Check existing EXIF tags only if avoidOverwrite is true
-    let existingTags = avoidOverwrite ? await exiftool.read(resolvedPath) : {};
+    const existingTags = avoidOverwrite
+      ? await exiftool.read(resolvedPath)
+      : undefined;
 
     // Import provider module
     let providerModule;
@@ -138,51 +136,28 @@ export async function execute({
     }
     if (verbose) console.log("Imported provider:", provider);
 
-    // Get description from provider
-    let description: string | undefined;
-
-    if (tasks.includes("description")) {
-      try {
-        description = await providerModule.getDescription?.({
-          buffer,
-          model,
-          prompt: descriptionPrompt,
-          providerArgs,
-        });
-      } catch (error) {
-        console.error("Failed to get description from provider:", error);
-        return;
-      }
-      if (verbose) console.log("Description is:", description);
-    }
-
-    // Get tags from provider
-    let tags: string | string[] | undefined;
-    if (tasks.includes("tags") || tasks.includes("tag")) {
-      try {
-        tags = await providerModule.getTags?.({
-          buffer,
-          model,
-          prompt: tagPrompt,
-          providerArgs,
-        });
-      } catch (error) {
-        console.error("Failed to get tags from provider:", error);
-        return;
-      }
-      if (verbose) console.log("Tags are:", tags);
-    }
-
-    if (typeof tags === "string") {
-      tags = tags
-        .replaceAll(/tag[0-9]+/g, "")
-        .replaceAll(/[\[\]\.{}<>/*\n'"]/g, "")
-        .split(":")
-        .at(-1)
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-    }
+    const [description, tags] = await Promise.all([
+      getDescription({
+        buffer,
+        model,
+        prompt: descriptionPrompt,
+        providerArgs,
+        providerModule,
+        verbose,
+        descriptionTags,
+        existingTags,
+      }),
+      getTags({
+        buffer,
+        model,
+        prompt: descriptionPrompt,
+        providerArgs,
+        providerModule,
+        verbose,
+        tagTags,
+        existingTags,
+      }),
+    ]);
 
     if (dry) {
       if (description) {
@@ -193,52 +168,13 @@ export async function execute({
       }
       if (verbose) console.log("Dry run - did not write to file");
     } else {
-      const descriptionTagsToWrite = description
-        ? avoidOverwrite
-          ? descriptionTags.filter(
-              (tag) =>
-                existingTags[tag] == null ||
-                (typeof existingTags[tag] === "string" &&
-                  existingTags[tag].trim() === ""),
-            )
-          : descriptionTags
-        : [];
+      const result = {
+        ...description,
+        ...tags,
+      };
 
-      const result = (
-        tags
-          ? avoidOverwrite
-            ? Object.fromEntries(
-                tagTags
-                  .map((t) => {
-                    const existingTag = existingTags[t];
-                    return [
-                      t,
-                      Array.isArray(existingTag)
-                        ? Array.from(new Set(existingTag.concat(tags)))
-                        : existingTag,
-                    ];
-                  })
-                  .filter((k) => !Array.isArray(k[1]) || k[1].length > 0),
-              )
-            : Object.fromEntries(
-                tagTags
-                  .map((t) => [t, Array.from(new Set(tags))])
-                  .filter((k) => !Array.isArray(k[1]) || k[1].length > 0),
-              )
-          : {}
-      ) as WriteTags;
-
-      if (Object.keys(result).length > 0 || descriptionTagsToWrite.length > 0) {
-        await exiftool.write(
-          resolvedPath,
-          {
-            ...result,
-            ...Object.fromEntries(
-              descriptionTagsToWrite.map((tag) => [tag, description]),
-            ),
-          },
-          { writeArgs },
-        );
+      if (Object.keys(result).length > 0) {
+        await exiftool.write(resolvedPath, result, { writeArgs });
         if (verbose) console.log("Wrote description to file:", resolvedPath);
       } else {
         if (verbose) console.log("No new tags to write, skipping.");
