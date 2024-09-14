@@ -48,6 +48,7 @@ Optional options:
 - `-w, --watch <path>`: Watch directory for new files to process.
 - `--avoid-overwrite`: Avoid overwriting if EXIF tags already exist in the file.
 - `--ext <extensions...>`: File extensions to watch. Only files with this extensions will be processed.
+- `--concurrency <number>`: The numbers of files to process concurrently in watch mode.
 
 Example usage:
 
@@ -131,7 +132,7 @@ Ollama runs locally and does not require an API key. Ensure that Ollama is insta
 
 ### Prerequisites
 
-- Node.js >=18
+- Node.js >=16
 - pnpm
 
 ### Clone the Repository

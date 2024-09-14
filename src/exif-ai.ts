@@ -7,10 +7,11 @@ import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { getText } from "./fluent/index.js";
+import pLimit from "p-limit";
 
 async function findFilesRecursive(
   dir: string,
-  ext: string[],
+  ext?: string[],
 ): Promise<string[]> {
   const files: string[] = [];
   const items = await readdir(dir, { withFileTypes: true });
@@ -21,7 +22,7 @@ async function findFilesRecursive(
       files.push(...subFiles);
     } else if (
       item.isFile() &&
-      (!ext.length || ext.some((e) => fullPath.endsWith(e)))
+      (ext == null || ext.length === 0 || ext.some((e) => fullPath.endsWith(e)))
     ) {
       files.push(fullPath);
     }
@@ -30,7 +31,7 @@ async function findFilesRecursive(
 }
 const program = new Command();
 program
-  .version("3.0.5")
+  .version("3.0.6")
   .description(getText("description") ?? "")
   .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
   .option("-T, --tasks <tasks...>", getText("tasks"))
@@ -47,10 +48,13 @@ program
   .option("-w, --watch <path>", getText("watch"))
   .option("--avoid-overwrite", getText("avoid-overwrite"))
   .option("--ext <extensions...>", getText("ext"))
+  .option("--concurrency <number>", getText("concurrency"))
   .parse();
 
 const options = program.opts();
 const watchMode = options.watch;
+
+const limit = pLimit(Number(options.concurrency) || 1);
 
 function logVerbose(...message: unknown[]) {
   if (options.verbose) console.log(...message);
@@ -90,7 +94,7 @@ if (watchMode) {
   const files = await findFilesRecursive(pathToWatch, options.ext);
 
   // Process all files concurrently
-  await Promise.all(files.map((file) => handleExecution(file)));
+  await Promise.all(files.map((file) => limit(() => handleExecution(file))));
 
   watch(pathToWatch, {
     persistent: true,

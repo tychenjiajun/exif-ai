@@ -24,6 +24,7 @@ description-prompt = Custom prompt for the AI provider to generate description. 
 tag-prompt = Custom prompt for the AI provider to generate tags. Defaults to a generic image tagging prompt.
 verbose = Enable verbose output for debugging.
 tasks = List of tasks to perform ('description' and/or 'tag').
+concurrency = The numbers of files to process concurrently in watch mode.
 `),
 );
 
@@ -45,6 +46,7 @@ description-prompt = 为AI提供者定制的生成描述的提示。默认为通
 tag-prompt = 为AI提供者定制的生成标签的提示。默认为通用图像标签提示。
 verbose = 启用详细输出以进行调试。
 tasks = 要执行的任务列表（'description'和/或'tag'）。
+concurrency = 在监视模式下同时处理文件的数目。
 `),
 );
 
