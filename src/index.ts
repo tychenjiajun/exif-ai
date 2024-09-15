@@ -1,18 +1,46 @@
 import { readFile } from "node:fs/promises";
-import { exiftool, WriteTags } from "exiftool-vendored";
+import { exiftool } from "exiftool-vendored";
 import { resolve } from "node:path";
 import { env } from "node:process";
 import ISO6391 from "iso-639-1";
 // @ts-ignore
 import xhr2 from "xhr2";
 
-import fetch, { Headers, Request, Response } from "node-fetch";
+import fetch, {
+  Headers,
+  Request,
+  Response,
+  RequestInit,
+  RequestInfo,
+} from "node-fetch";
 import { DescriptionKey, getDescription } from "./tasks/description.js";
 import { getTags, TagKey } from "./tasks/tags.js";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
-if (!globalThis.fetch) {
+if (
+  !globalThis.fetch ||
+  env.https_proxy ||
+  env.HTTPS_PROXY ||
+  env.http_proxy ||
+  env.HTTP_PROXY
+) {
   // @ts-ignore
-  globalThis.fetch = fetch;
+  globalThis.fetch = function (
+    url: URL | RequestInfo,
+    init?: RequestInit,
+  ): Promise<Response> {
+    const agentObject = env.https_proxy
+      ? { agent: new HttpsProxyAgent(env.https_proxy) }
+      : env.HTTPS_PROXY
+        ? { agent: new HttpsProxyAgent(env.HTTPS_PROXY) }
+        : env.http_proxy
+          ? { agent: new HttpsProxyAgent(env.http_proxy) }
+          : env.HTTP_PROXY
+            ? { agent: new HttpsProxyAgent(env.HTTP_PROXY) }
+            : undefined;
+
+    return fetch(url, agentObject ? { ...init, ...agentObject } : init);
+  };
   // @ts-ignore
   globalThis.Headers = Headers;
   // @ts-ignore

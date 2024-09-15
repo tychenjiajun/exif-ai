@@ -30,7 +30,7 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-a, --api-provider <value>` Name of the AI provider to use (`ollama` for Ollama or `zhipu` for ZhipuAI).
+- `-a, --api-provider <value>` Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini).
 
 Optional options:
 
@@ -103,12 +103,13 @@ npm install -g exif-ai
 
 ## API Providers
 
-Exif AI relies on API providers to generate image descriptions. Currently, we support two providers: ZhipuAI and Ollama.
+Exif AI relies on API providers to generate image descriptions. Currently, we support three providers: ZhipuAI, Ollama and Google Gemini.
 
 ### Supported Providers
 
 - ZhipuAI: A leading AI service provider. Requires an API key.
 - Ollama: A local AI service that runs on your machine, eliminating the need for an API key.
+- Google Gemini: A powerful AI service provided by Google.
 
 ### Custom Providers
 
@@ -122,6 +123,14 @@ To use [ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys), you need to set t
 
 ```bash
 export ZHIPUAI_API_KEY=your_zhipuai_api_key
+```
+
+### Google Gemini
+
+To use [Google Gemini](https://ai.google.dev/), you need to set the API key. You can do this by setting an environment variable:
+
+```bash
+export API_KEY=your_google_api_key
 ```
 
 ### Ollama Configuration
@@ -142,7 +151,7 @@ First, clone the Exif AI repository to your local machine:
 ```bash
 git clone https://github.com/tychenjiajun/exif-ai.git
 cd exif-ai
-```
+````
 
 ### Install Dependencies
 

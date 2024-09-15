@@ -18,12 +18,19 @@ function formatTags(tags: string | string[] | undefined) {
     ? tags
         .replaceAll(/tag[0-9]+/g, "")
         .replaceAll(/[\[\]\.{}<>/*'"()]/g, "")
-        .split(":")
+        .split(tags.includes("：") ? "：" : ":")
         .at(-1)
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0)
-        .filter((s) => [...s.matchAll(/ /g)].length <= 1)
+        ?.split(tags.includes(",") ? "," : "\n")
+        .map((s) =>
+          s
+            .trim()
+            .replace(/\n$/g, "")
+            .replace(/[0-9]+[ ]+(.*)/g, "$1"),
+        )
+        .filter(
+          (s) =>
+            s.length > 0 && [...s.matchAll(/ /g)].length <= 1 && s !== "\n",
+        )
     : tags;
 }
 
@@ -71,11 +78,15 @@ export async function getTags({
             const existingTag = existingTags[key];
             return [
               key,
-              existingTag == null
-                ? formatted
-                : Array.isArray(existingTag)
-                  ? existingTag.concat(formatted)
-                  : formatted.concat(existingTag.trim()),
+              Array.from(
+                new Set(
+                  existingTag == null
+                    ? formatted
+                    : Array.isArray(existingTag)
+                      ? existingTag.concat(formatted)
+                      : formatted.concat(existingTag.trim()),
+                ),
+              ),
             ];
           }),
         )
