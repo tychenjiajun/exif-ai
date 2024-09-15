@@ -10,7 +10,7 @@ exif-ai [options]
 
 # DESCRIPTION
 
-The `exif-ai` command is a Node.js CLI tool that uses AI to analyze image content and write descriptive metadata to the EXIF information of an image file. It supports two AI providers: Ollama and ZhipuAI. Ollama runs locally, while ZhipuAI requires an API key.
+The `exif-ai` command is a Node.js CLI tool that uses AI to analyze image content and write descriptive metadata to the EXIF information of an image file. It supports three AI providers: Ollama, ZhipuAI and Google Gemini. Ollama runs locally, while ZhipuAI and Google Gemini requires an API key.
 
 # OPTIONS
 
@@ -41,6 +41,12 @@ Provide additional arguments for ExifTool when writing metadata.
 * `--provider-args <args...>`:
 Pass additional arguments to the AI provider.
 
+* `--concurrency <number>`:
+The numbers of files to process concurrently in watch mode.
+
+* `-h, --help`:
+Display help information.
+
 # EXAMPLES
 
 Write a description to an image using Ollama:
@@ -69,13 +75,28 @@ A local AI service that runs on your machine. No API key is required.
 * ZhipuAI:
 An AI service provider that requires an API key. Set the environment variable ZHIPUAI_API_KEY with your key.
 
+* Google Gemini:
+An AI service provider that requires an API key. Set the environment variable API_KEY with your key.
+
 # CONFIGURATION
+
+## Zhipu AI
 
 For ZhipuAI, set the API key using an environment variable:
 
 ```
 export ZHIPUAI_API_KEY=your_zhipuai_api_key
 ```
+
+## Google Gemini
+
+For Google Gemini, set the API key using an environment variable:
+
+```
+export API_KEY=your_api_key
+```
+
+## Ollama
 
 Ensure Ollama is installed and configured on your machine. Refer to the Ollama GitHub repository for installation and setup instructions.
 
@@ -97,3 +118,4 @@ Exif AI is licensed under the GPL-2.0-only License.
 * exiftool-vendored (https://github.com/photostructure/exiftool-vendored.js)
 * ollama (https://github.com/ollama/ollama)
 * zhipuAI (https://zhipu.ai)
+* Google Gemini (https://ai.google.dev/)

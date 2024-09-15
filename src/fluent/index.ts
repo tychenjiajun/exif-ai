@@ -8,8 +8,8 @@ const bundles: Record<string, FluentBundle> = {
 
 bundles["en-US"].addResource(
   new FluentResource(`
-description = A Node.js CLI that uses Ollama or ZhipuAI to intelligently write image description and/or tags to exif metadata by it's content.
-api-provider = Name of the AI provider to use ('ollama' for Ollama or 'zhipu' for ZhipuAI).
+description = A Node.js CLI that uses Ollama, ZhipuAI or Google Gemini to intelligently write image description and/or tags to exif metadata by it's content.
+api-provider = Name of the AI provider to use ('ollama' for Ollama, 'zhipu' for ZhipuAI, 'google' for Google Gemini).
 input = Path to the input image file.
 model = Specify the AI model to use, if supported by the provider.
 description-tags = List of EXIF tags to write the description to. Defaults to common description tags.
@@ -31,7 +31,7 @@ concurrency = The numbers of files to process concurrently in watch mode.
 bundles["zh-CN"].addResource(
   new FluentResource(`
 description = 一个Node.js命令行工具，它使用Ollama或ZhipuAI根据图像内容智能地将图像描述和/或标签写入EXIF元数据。
-api-provider = 要使用的AI提供者名称（'ollama'代表Ollama或'zhipu'代表ZhipuAI）。
+api-provider = 要使用的AI提供者名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini）。
 input = 输入图像文件的路径。
 model = 指定要使用的AI模型，如果提供者支持。
 description-tags = 要写入描述的EXIF标签列表。默认为常见描述标签。
