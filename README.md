@@ -65,7 +65,7 @@ import { execute } from "exif-ai";
 
 const options = {
   path: "example.jpeg", // Path to the input image file
-  provider: "ollama", // AI provider to use (e.g., 'ollama', 'zhipu')
+  provider: "ollama", // AI provider to use (e.g., 'ollama', 'zhipu', 'google')
   model: "moondream", // Optional: Specific AI model to use (if supported by the provider)
   descriptionTags: [
     "XPComment",
