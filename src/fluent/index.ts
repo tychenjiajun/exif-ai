@@ -23,30 +23,32 @@ ext = File extensiosn to watch. Only files with this extensions will be processe
 description-prompt = Custom prompt for the AI provider to generate description. Defaults to a generic image description prompt.
 tag-prompt = Custom prompt for the AI provider to generate tags. Defaults to a generic image tagging prompt.
 verbose = Enable verbose output for debugging.
-tasks = List of tasks to perform ('description' and/or 'tag').
+tasks = List of tasks to perform ('description', 'tag', 'face').
 concurrency = The numbers of files to process concurrently in watch mode.
+face-group-ids = List of face group IDs to use for face recognition.
 `),
 );
 
 bundles["zh-CN"].addResource(
   new FluentResource(`
 description = 一个Node.js命令行工具，它使用Ollama或ZhipuAI根据图像内容智能地将图像描述和/或标签写入EXIF元数据。
-api-provider = 要使用的AI提供者名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini）。
+api-provider = 要使用的AI供应商名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini）。
 input = 输入图像文件的路径。
-model = 指定要使用的AI模型，如果提供者支持。
+model = 指定要使用的AI模型，如果供应商支持。
 description-tags = 要写入描述的EXIF标签列表。默认为常见描述标签。
 tag-tags = 要写入标签的EXIF标签列表。默认为常见标签。
 dry-run = 预览AI生成的描述和标签，但不写入图像文件。
 exif-tool-write-args = 写入元数据时附加的ExifTool参数。
-provider-args = AI提供者的附加参数。
+provider-args = AI供应商的附加参数。
 watch = 监视目录以处理新文件。
 avoid-overwrite = 如果EXIF标签已在文件中存在，则避免覆盖。
 ext = 要监视的文件扩展名。只有具有此扩展名的文件才会被处理。
-description-prompt = 为AI提供者定制的生成描述的提示。默认为通用图像描述提示。
-tag-prompt = 为AI提供者定制的生成标签的提示。默认为通用图像标签提示。
+description-prompt = 为AI供应商定制的生成描述的提示。默认为通用图像描述提示。
+tag-prompt = 为AI供应商定制的生成标签的提示。默认为通用图像标签提示。
 verbose = 启用详细输出以进行调试。
-tasks = 要执行的任务列表（'description'和/或'tag'）。
+tasks = 要执行的任务列表（'description'，'tag'，'face'）。
 concurrency = 在监视模式下同时处理文件的数目。
+face-group-ids = 人脸搜索要使用的面部组ID列表。
 `),
 );
 
