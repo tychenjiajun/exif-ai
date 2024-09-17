@@ -43,32 +43,38 @@ export async function getTags({
   verbose = false,
   tagTags,
   existingTags,
+  additionalTags,
 }: {
   buffer: Buffer;
   model?: string;
   prompt: string;
-  providerModule: any;
+  providerModule?: any;
   providerArgs?: string[];
   verbose?: boolean;
   tagTags: Readonly<TagKey[]>;
   existingTags?: Readonly<Tags>;
+  additionalTags?: Readonly<string[]>;
 }) {
   // Get tags from provider
-  let tags: string | string[] | undefined;
+  let tags: string | string[] = [];
 
-  try {
-    tags = await providerModule.getTags?.({
-      buffer,
-      model,
-      prompt: prompt,
-      providerArgs,
-    });
-  } catch (error) {
-    console.error("Failed to get tags from provider:", error);
-    return;
+  if (providerModule) {
+    try {
+      tags = await providerModule.getTags?.({
+        buffer,
+        model,
+        prompt: prompt,
+        providerArgs,
+      });
+    } catch (error) {
+      console.error("Failed to get tags from provider:", error);
+      return;
+    }
   }
 
-  const formatted = formatTags(tags);
+  const formatted = formatTags(tags)?.concat(additionalTags ?? []);
+
+  if (verbose) console.log("Tags are:", formatted);
 
   return formatted == null || formatted.length === 0
     ? ({} as Record<TagKey, string[]>)

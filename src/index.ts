@@ -16,6 +16,7 @@ import fetch, {
 import { DescriptionKey, getDescription } from "./tasks/description.js";
 import { getTags, TagKey } from "./tasks/tags.js";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import { getFaces } from "./tasks/face.js";
 
 if (
   !globalThis.fetch ||
@@ -73,9 +74,10 @@ export async function execute({
   providerArgs,
   avoidOverwrite = false,
   doNotEndExifTool = false,
+  faceGroupIds = [],
 }: {
   /**
-   * Array of tasks to perform: 'description', 'tag', or 'tags'
+   * Array of tasks to perform: 'description', 'tag', 'face'
    */
   tasks?: string[];
   /**
@@ -130,8 +132,13 @@ export async function execute({
    * Do not end the ExifTool session after execution
    */
   doNotEndExifTool?: boolean;
+  /**
+   * Array of face group IDs to use for face recognition
+   */
+  faceGroupIds?: string[];
 }) {
-  if (["description", "tag", "tags"].every((t) => !tasks.includes(t))) return;
+  if (["description", "tag", "tags", "face"].every((t) => !tasks.includes(t)))
+    return;
 
   const resolvedPath = resolve(path);
 
@@ -164,6 +171,14 @@ export async function execute({
     }
     if (verbose) console.log("Imported provider:", provider);
 
+    const faces = tasks.includes("face")
+      ? await getFaces({
+          buffer,
+          verbose,
+          faceGroupIds,
+        })
+      : undefined;
+
     const [description, tags] = await Promise.all([
       tasks.includes("description")
         ? getDescription({
@@ -184,27 +199,32 @@ export async function execute({
             prompt: tagPrompt,
             providerArgs,
             providerModule,
-            verbose,
             tagTags,
             existingTags,
+            additionalTags: faces,
           })
-        : undefined,
+        : tasks.includes("face")
+          ? getTags({
+              buffer,
+              model,
+              prompt: tagPrompt,
+              providerArgs,
+              tagTags,
+              existingTags,
+              additionalTags: faces,
+            })
+          : undefined,
     ]);
 
+    const result = {
+      ...description,
+      ...tags,
+    };
+
     if (dry) {
-      if (description) {
-        console.log(description);
-      }
-      if (tags) {
-        console.log(tags);
-      }
+      console.log(JSON.stringify(result));
       if (verbose) console.log("Dry run - did not write to file");
     } else {
-      const result = {
-        ...description,
-        ...tags,
-      };
-
       if (Object.keys(result).length > 0) {
         await exiftool.write(resolvedPath, result, { writeArgs });
         if (verbose) console.log("Wrote description to file:", resolvedPath);
