@@ -1,6 +1,3 @@
-import { Tags } from "exiftool-vendored";
-import { objectFromEntries } from "ts-extras";
-import { TagKey } from "./tags.js";
 import sharp from "sharp";
 import { env } from "node:process";
 

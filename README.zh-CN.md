@@ -131,6 +131,7 @@ Exif AI依赖于API供应商来生成图像描述和标签。目前，我们支�
 - ZhipuAI：领先的AI服务供应商。需要API密钥。
 - Ollama：在您的机器上运行的本地AI服务，无需API密钥。
 - Google Gemini：由Google提供的强大AI服务。
+- Coze: 扣子是新一代 AI 大模型智能体开发平台。您可以使用API来调用扣子的bot或工作流。
 
 ### 自定义供应商
 
@@ -138,7 +139,7 @@ Exif AI依赖于API供应商来生成图像描述和标签。目前，我们支�
 
 ## 配置
 
-### 设置API密钥（适用于ZhipuAI）
+### ZhipuAI
 
 要使用[ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys)，您需要设置API密钥。您可以通过设置环境变量来完成此操作：
 
@@ -154,7 +155,30 @@ export ZHIPUAI_API_KEY=your_zhipuai_api_key
 export API_KEY=your_google_api_key
 ```
 
-### Ollama Configuration
+### Coze
+
+要使用[Coze](https://www.coze.com/) Bot，您需要设置API密钥。您可以通过设置环境变量来完成此操作：
+
+```bash
+export COZE_API_KEY=your_coze_api_key
+```
+
+在中国地区使用Coze时，请按照以下方式配置端点设置：
+
+```bash
+export COZE_ENDPOINT=https://api.coze.cn
+```
+
+在Coze中，`model`参数对应于bot的id。要使用Coze API进行交互，请使用以下命令格式：
+
+
+```bash
+exif-ai -a coze_bot -i image.jpg -m 7402199305639034921
+```
+
+在此处，`-a coze_bot`指定了Coze API，`-i image.jpg`表示输入图像文件，而`-m 7402199305639034921`是您希望使用的bot的id。
+
+### Ollama
 
 Ollama在本地运行，不需要API密钥。请确保Ollama已安装在您的机器上并正确配置。有关安装和设置说明，请参考[Ollama](https://github.com/ollama/ollama)。
 

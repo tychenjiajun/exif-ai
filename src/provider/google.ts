@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { GoogleGenerativeAI, InlineDataPart } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { fileTypeFromBuffer } from "file-type";
 
 import { env } from "node:process";
@@ -39,7 +39,7 @@ async function sizeHandle(
 
 export async function getDescription({
   buffer,
-  model = "gemini-1.5-flash",
+  model: _model = "gemini-1.5-flash",
   prompt = "请使用中文描述这个图片。",
 }: {
   buffer: Buffer;
@@ -49,7 +49,7 @@ export async function getDescription({
   try {
     const handled = await sizeHandle(buffer);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: _model });
 
     const image = {
       inlineData: {
@@ -68,7 +68,7 @@ export async function getDescription({
 
 export async function getTags({
   buffer,
-  model = "gemini-1.5-flash",
+  model: _model = "gemini-1.5-flash",
   prompt = "请根据图片中的场景、事件、地点、人数、出现的物体来给图片打标签。输出为 <tag1>, <tag2>, <tags>, …… , <tagN>",
 }: {
   buffer: Buffer;
@@ -78,7 +78,7 @@ export async function getTags({
   try {
     const handled = await sizeHandle(buffer);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: _model });
 
     const image = {
       inlineData: {

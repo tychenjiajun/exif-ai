@@ -14,6 +14,8 @@ export async function getDescription({
   descriptionTags,
   verbose = false,
   existingTags,
+  path,
+  file_id,
 }: {
   buffer: Buffer;
   model?: string;
@@ -23,6 +25,8 @@ export async function getDescription({
   descriptionTags: Readonly<DescriptionKey[]>;
   verbose?: boolean;
   existingTags?: Readonly<Tags>;
+  path: string;
+  file_id?: string;
 }) {
   // Get description from provider
   let description: string | undefined;
@@ -33,6 +37,8 @@ export async function getDescription({
       model,
       prompt: prompt,
       providerArgs,
+      path,
+      file_id,
     });
   } catch (error) {
     console.error("Failed to get description from provider:", error);

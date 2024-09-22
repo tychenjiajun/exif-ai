@@ -44,6 +44,8 @@ export async function getTags({
   tagTags,
   existingTags,
   additionalTags,
+  path,
+  file_id,
 }: {
   buffer: Buffer;
   model?: string;
@@ -54,6 +56,8 @@ export async function getTags({
   tagTags: Readonly<TagKey[]>;
   existingTags?: Readonly<Tags>;
   additionalTags?: Readonly<string[]>;
+  path: string;
+  file_id?: string;
 }) {
   // Get tags from provider
   let tags: string | string[] = [];
@@ -65,6 +69,8 @@ export async function getTags({
         model,
         prompt: prompt,
         providerArgs,
+        path,
+        file_id,
       });
     } catch (error) {
       console.error("Failed to get tags from provider:", error);
