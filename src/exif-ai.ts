@@ -31,7 +31,7 @@ async function findFilesRecursive(
 }
 const program = new Command();
 program
-  .version("3.2.0")
+  .version("3.2.1")
   .description(getText("description") ?? "")
   .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
   .option("-T, --tasks <tasks...>", getText("tasks"))
@@ -103,7 +103,7 @@ if (watchMode) {
     ignoreInitial: true,
     ignored: (path) => {
       return (
-        !options.ext.length ||
+        !options.ext?.length ||
         !options.ext.some((ext: string) => path.endsWith(ext))
       );
     },
