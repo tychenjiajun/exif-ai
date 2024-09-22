@@ -2,6 +2,8 @@
 
 [![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)](https://www.npmjs.com/package/exif-ai)
 
+https://github.com/user-attachments/assets/c5370480-2dd9-4980-ad08-317e5634ab9d
+
 ## 关于
 
 _Exif AI_ 是一款功能强大的命令行工具，专为直接将AI生成的图像描述和/或标签写入图像文件的元数据而设计。该工具运用先进的AI模型来深入分析图像内容，并自动生成相应的描述性元数据，显著提升图像的检索效率和可用性。
