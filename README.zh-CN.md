@@ -139,13 +139,15 @@ Exif AI依赖于API供应商来生成图像描述和标签。目前，我们支�
 
 ## 配置
 
-### ZhipuAI
+### 智谱AI
 
-要使用[ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys)，您需要设置API密钥。您可以通过设置环境变量来完成此操作：
+要使用[智谱AI](https://open.bigmodel.cn/usercenter/apikeys)，您需要设置API密钥。您可以通过设置环境变量来完成此操作：
 
 ```bash
 export ZHIPUAI_API_KEY=your_zhipuai_api_key
 ```
+
+如果你还没有智谱AI的API密钥，请[在此](https://www.bigmodel.cn/invite?icode=INWAHJuWBFUp07JYI6oBveZLO2QH3C0EBTSr%2BArzMw4%3D)注册并获取API密钥。
 
 ### Google Gemini
 

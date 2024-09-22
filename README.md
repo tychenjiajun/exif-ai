@@ -156,6 +156,8 @@ To use [ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys), you need to set t
 export ZHIPUAI_API_KEY=your_zhipuai_api_key
 ```
 
+If you don't have a ZhipuAI account, you can sign up for one [here](https://www.bigmodel.cn/invite?icode=INWAHJuWBFUp07JYI6oBveZLO2QH3C0EBTSr%2BArzMw4%3D).
+
 ### Google Gemini
 
 To use [Google Gemini](https://ai.google.dev/), you need to set the API key. You can do this by setting an environment variable:
