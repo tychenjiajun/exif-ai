@@ -3,7 +3,11 @@
 [![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)](https://www.npmjs.com/package/exif-ai)
 
 _Read this in other languages:_
-[_简体中文_](README.zh-CN.md),
+[_简体中文_](README.zh-CN.md)
+
+
+https://github.com/user-attachments/assets/c5370480-2dd9-4980-ad08-317e5634ab9d
+
 
 ## About
 
