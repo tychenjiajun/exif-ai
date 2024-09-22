@@ -10,7 +10,7 @@ exif-ai [options]
 
 # DESCRIPTION
 
-The `exif-ai` command is a Node.js CLI tool that uses AI to analyze image content and write descriptive metadata to the EXIF information of an image file. It supports three AI providers: Ollama, ZhipuAI and Google Gemini. Ollama runs locally, while ZhipuAI and Google Gemini requires an API key.
+The `exif-ai` command is a Node.js CLI tool that uses AI to analyze image content and write descriptive metadata to the EXIF information of an image file. It supports four AI providers: Ollama, ZhipuAI, Google Gemini and Coze. Ollama runs locally, while ZhipuAI, Google Gemini and Coze requires an API key.
 
 # OPTIONS
 
@@ -18,7 +18,7 @@ The `exif-ai` command is a Node.js CLI tool that uses AI to analyze image conten
 Specify the path to the input image file.
 
 * `-a, --api-provider <name>`:
-Choose the AI provider to use. Acceptable values are ollama or zhipu.
+Choose the AI provider to use. Acceptable values are ollama, zhipu, google or coze.
 
 * `-p, --prompt <text>`:
 Set a custom prompt for the AI provider. If not specified, a default prompt is used.
@@ -77,6 +77,8 @@ An AI service provider that requires an API key. Set the environment variable ZH
 
 * Google Gemini:
 An AI service provider that requires an API key. Set the environment variable API_KEY with your key.
+
+* Coze:
 
 # CONFIGURATION
 

@@ -179,6 +179,18 @@ export async function execute({
         })
       : undefined;
 
+    let file_id: string | undefined;
+
+    if ("uploadFile" in providerModule) {
+      if (verbose) console.log("Uploading file to provider");
+      const { id } = await providerModule.uploadFile({
+        path,
+        buffer,
+      });
+
+      file_id = id;
+    }
+
     const [description, tags] = await Promise.all([
       tasks.includes("description")
         ? getDescription({
@@ -190,6 +202,8 @@ export async function execute({
             verbose,
             descriptionTags,
             existingTags,
+            path: resolvedPath,
+            file_id,
           })
         : undefined,
       tasks.includes("tag") || tasks.includes("tags")
@@ -202,6 +216,8 @@ export async function execute({
             tagTags,
             existingTags,
             additionalTags: faces,
+            path: resolvedPath,
+            file_id,
           })
         : tasks.includes("face")
           ? getTags({
@@ -212,6 +228,8 @@ export async function execute({
               tagTags,
               existingTags,
               additionalTags: faces,
+              path: resolvedPath,
+              file_id,
             })
           : undefined,
     ]);

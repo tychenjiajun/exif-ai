@@ -33,7 +33,7 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-a, --api-provider <value>`: Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini).
+- `-a, --api-provider <value>`: Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini, `coze_bot` for Coze Bot).
 
 Optional options:
 
@@ -133,13 +133,14 @@ Please ensure that you securely manage your API keys. Do not expose them in publ
 
 ## API Providers
 
-Exif AI relies on API providers to generate image descriptions and tags. Currently, we support three providers: ZhipuAI, Ollama and Google Gemini.
+Exif AI relies on API providers to generate image descriptions and tags. Currently, we support four providers: ZhipuAI, Ollama, Google Gemini and Coze.
 
 ### Supported Providers
 
 - ZhipuAI: A leading AI service provider. Requires an API key.
 - Ollama: A local AI service that runs on your machine, eliminating the need for an API key.
 - Google Gemini: A powerful AI service provided by Google.
+- Coze: Coze is a next-generation AI application and chatbot developing platform for everyone.
 
 ### Custom Providers
 
@@ -147,7 +148,7 @@ You can also develop your own custom provider by implementing the provider inter
 
 ## Configuration
 
-### Setting API Keys (for ZhipuAI)
+### Zhipu AI
 
 To use [ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys), you need to set the API key. You can do this by setting an environment variable:
 
@@ -163,7 +164,29 @@ To use [Google Gemini](https://ai.google.dev/), you need to set the API key. You
 export API_KEY=your_google_api_key
 ```
 
-### Ollama Configuration
+### Coze Bot
+
+To use [Coze](https://www.coze.com/) bot, you need to set the API key. You can do this by setting an environment variable:
+
+```bash
+export COZE_API_KEY=your_coze_api_key
+```
+
+When utilizing Coze within the Chinese region, configure the endpoint setting as follows:
+
+```bash
+export COZE_ENDPOINT=https://api.coze.cn
+```
+
+In Coze Bot, the `model` parameter corresponds to the bot's identifier. To interact with the Coze API, use the following command format:
+
+```bash
+exif-ai -a coze_bot -i image.jpg -m 7402199305639034921
+```
+
+Here, `-a coze_bot` specifies the Coze API, `-i image.jpg` indicates the input image file, and `-m 7402199305639034921` is the unique identifier for the bot model you wish to use.
+
+### Ollama
 
 Ollama runs locally and does not require an API key. Ensure that Ollama is installed and properly configured on your machine. Refer to the [Ollama GitHub repository](https://github.com/ollama/ollama) for installation and setup instructions.
 

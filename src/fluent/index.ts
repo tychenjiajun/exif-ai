@@ -8,8 +8,8 @@ const bundles: Record<string, FluentBundle> = {
 
 bundles["en-US"].addResource(
   new FluentResource(`
-description = A Node.js CLI that uses Ollama, ZhipuAI or Google Gemini to intelligently write image description and/or tags to exif metadata by it's content.
-api-provider = Name of the AI provider to use ('ollama' for Ollama, 'zhipu' for ZhipuAI, 'google' for Google Gemini).
+description = A Node.js CLI that uses Ollama, ZhipuAI, Google Gemini or Cozw to intelligently write image description and/or tags to exif metadata by it's content.
+api-provider = Name of the AI provider to use ('ollama' for Ollama, 'zhipu' for ZhipuAI, 'google' for Google Gemini, 'coze_bot' for Coze Bot).
 input = Path to the input image file.
 model = Specify the AI model to use, if supported by the provider.
 description-tags = List of EXIF tags to write the description to. Defaults to common description tags.
@@ -31,8 +31,8 @@ face-group-ids = List of face group IDs to use for face recognition.
 
 bundles["zh-CN"].addResource(
   new FluentResource(`
-description = 一个Node.js命令行工具，它使用Ollama或ZhipuAI根据图像内容智能地将图像描述和/或标签写入EXIF元数据。
-api-provider = 要使用的AI供应商名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini）。
+description = 一个Node.js命令行工具，它使用Ollama或ZhipuAI或Google Gemini或Coze根据图像内容智能地将图像描述和/或标签写入EXIF元数据。
+api-provider = 要使用的AI供应商名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini, 'coze_bot'代表Coze）。
 input = 输入图像文件的路径。
 model = 指定要使用的AI模型，如果供应商支持。
 description-tags = 要写入描述的EXIF标签列表。默认为常见描述标签。

@@ -1,7 +1,7 @@
 {
   "name": "exif-ai",
-  "version": "3.1.0",
-  "description": "A Node.js CLI and library that uses Ollama, ZhipuAI or Google Gemini to intelligently write image description and/or tags to exif metadata by it's content.",
+  "version": "3.1.1",
+  "description": "A Node.js CLI and library that uses Ollama, ZhipuAI, Google Gemini or Coze to intelligently write image description and/or tags to exif metadata by it's content.",
   "homepage": "https://github.com/tychenjiajun/exif-ai",
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
     "cli",
     "cli-tool",
     "metadata",
-    "gemini"
+    "gemini",
+    "coze"
   ],
   "author": {
     "name": "Jiajun Chen",
@@ -48,6 +49,7 @@
   },
   "license": "GPL-2.0-only",
   "dependencies": {
+    "@coze/coze-js": "^0.2.0",
     "@fluent/bundle": "^0.18.0",
     "@google/generative-ai": "^0.19.0",
     "chokidar": "^4.0.0",
