@@ -61,7 +61,7 @@
     "node-fetch": "^3.3.2",
     "ollama": "^0.5.8",
     "p-limit": "^6.1.0",
-    "sharp": "0.32.6",
+    "sharp": "0.33.5",
     "tencentcloud-sdk-nodejs-iai": "^4.0.918",
     "ts-extras": "^0.13.0",
     "xhr2": "^0.2.1"
