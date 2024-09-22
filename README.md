@@ -33,7 +33,7 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-a, --api-provider <value>`: Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini, `coze_bot` for Coze Bot).
+- `-a, --api-provider <value>`: Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini, `coze_bot` for Coze Bot, `openai` for OpenAI).
 
 Optional options:
 
@@ -133,20 +133,35 @@ Please ensure that you securely manage your API keys. Do not expose them in publ
 
 ## API Providers
 
-Exif AI relies on API providers to generate image descriptions and tags. Currently, we support four providers: ZhipuAI, Ollama, Google Gemini and Coze.
+Exif AI is designed to leverage various API providers for generating image descriptions and tags. We currently support five prominent providers, each offering unique capabilities and integration options. Below is a summary of the supported providers, including details on their requirements and features.
 
 ### Supported Providers
 
-- ZhipuAI: A leading AI service provider. Requires an API key.
-- Ollama: A local AI service that runs on your machine, eliminating the need for an API key.
-- Google Gemini: A powerful AI service provided by Google.
-- Coze: Coze is a next-generation AI application and chatbot developing platform for everyone.
+- ZhipuAI: A cutting-edge AI service provider known for its advanced algorithms. Access to this service requires an API key.
+- Ollama: An innovative local AI service that operates directly on your machine. This option does not require an API key, offering a seamless and private experience.
+- Google Gemini: A robust AI service powered by Google, renowned for its high-quality image processing capabilities.
+- Coze: Coze is a state-of-the-art AI platform designed for everyone, enabling the development of next-generation applications and chatbots.
+- OpenAI: A preeminent AI service provider, recognized for its wide range of AI-powered tools and applications. Like ZhipuAI, it requires an API key for access.
 
 ### Custom Providers
 
-You can also develop your own custom provider by implementing the provider interface. This allows you to integrate with other AI services or customize the description generation process.
+For users seeking to extend the functionality of Exif AI or integrate with additional AI services, we offer the flexibility to develop custom providers. By implementing the provider interface, you can create a custom provider to integrate with other AI services or tailor the image description generation process to your specific needs.
 
 ## Configuration
+
+### OpenAI
+
+To use [OpenAI](https://openai.com/), you need to set the API key. You can do this by setting an environment variable:
+
+```bash
+export OPENAI_API_KEY=your_openai_api_key
+```
+
+If you wish to use a custom API service provider that is compatible with the OpenAI API, you can set the `OPEN_API_BASEURL` environment variable to point to the desired endpoint.
+
+```bash
+export OPEN_API_BASEURL=https://api.customprovider.com/v1
+```
 
 ### Zhipu AI
 
