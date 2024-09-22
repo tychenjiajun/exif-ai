@@ -13,10 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - uses: docker://pandoc/core:2.9
-        with:
-          args: --standalone --to man manual.md -o exif-ai.1
         
       - uses: pnpm/action-setup@v4
         name: Install pnpm
