@@ -43,7 +43,7 @@ importers:
         version: 0.5.9
       openai:
         specifier: ^4.63.0
-        version: 4.64.0
+        version: 4.65.0
       p-limit:
         specifier: ^6.1.0
         version: 6.1.0
@@ -520,8 +520,8 @@ packages:
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@18.19.52':
-    resolution: {integrity: sha512-v4lreZWS6Qnixl81Ec6xxXocEbnxRSuBiJATIuWv6woKO1x/tKAR8mx4XIVQ0HneDoxbwNJzeZ5SjHF9SYGM+Q==}
+  '@types/node@18.19.53':
+    resolution: {integrity: sha512-GLxgUgHhDKO1Edw9Q0lvMbiO/IQXJwJlMaqxSGBXMpPy8uhkCs2iiPFaB2Q/gmobnFkckD3rqTBMVjXdwq+nKg==}
 
   '@types/node@22.6.0':
     resolution: {integrity: sha512-QyR8d5bmq+eR72TwQDfujwShHMcIrWIYsaQFtXRE58MHPTEKUNxjxvl0yS0qPMds5xbSDWtp7ZpvGFtd7dfMdQ==}
@@ -1496,8 +1496,8 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
-  openai@4.64.0:
-    resolution: {integrity: sha512-+o4vDKn2xzNMeR71rFMCPLr2penpwoALgRoJyIboIBOlkKjw+SoRiBOlO9ss1diXM4Elv01L/iliyr2oqY/l+A==}
+  openai@4.65.0:
+    resolution: {integrity: sha512-LfA4KUBpH/8rA3vjCQ74LZtdK/8wx9W6Qxq8MHqEdImPsN1XPQ2ompIuJWkKS6kXt5Cs5i8Eb65IIo4M7U+yeQ==}
     hasBin: true
     peerDependencies:
       zod: ^3.23.8
@@ -2433,7 +2433,7 @@ snapshots:
       '@types/node': 22.6.0
       form-data: 4.0.0
 
-  '@types/node@18.19.52':
+  '@types/node@18.19.53':
     dependencies:
       undici-types: 5.26.5
 
@@ -3472,9 +3472,9 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@4.64.0:
+  openai@4.65.0:
     dependencies:
-      '@types/node': 18.19.52
+      '@types/node': 18.19.53
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
