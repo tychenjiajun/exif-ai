@@ -29,7 +29,7 @@ describe("Image Processing Tests", () => {
       "ImageDescription",
       "Caption-Abstract",
     ] as Parameters<typeof execute>[0]["descriptionTags"],
-    prompt: "Describe image in English",
+    prompt: "Describe image.",
     verbose: true,
     dry: false,
     writeArgs: [],
@@ -63,13 +63,13 @@ describe("Image Processing Tests", () => {
 
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
-    expect(descriptionTags.XPComment).to.equal("Describe image in English");
-    expect(descriptionTags.Description).to.equal("Describe image in English");
+    expect(descriptionTags.XPComment).to.equal("Describe image.");
+    expect(descriptionTags.Description).to.equal("Describe image.");
     expect(descriptionTags.ImageDescription).to.equal(
-      "Describe image in English",
+      "Describe image.",
     );
     expect(descriptionTags["Caption-Abstract"]).to.equal(
-      "Describe image in English",
+      "Describe image.",
     );
 
     expect(existsSync(`${resolvedPath}_original`)).to.be.true;
@@ -106,12 +106,12 @@ describe("Image Processing Tests", () => {
     // Verify the existing tag is not overwritten
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Existing comment");
-    expect(descriptionTags.Description).to.equal("Describe image in English");
+    expect(descriptionTags.Description).to.equal("Describe image.");
     expect(descriptionTags.ImageDescription).to.equal(
-      "Describe image in English",
+      "Describe image.",
     );
     expect(descriptionTags["Caption-Abstract"]).to.equal(
-      "Describe image in English",
+      "Describe image.",
     );
   });
 
@@ -126,7 +126,7 @@ describe("Image Processing Tests", () => {
     // Assuming the function returns undefined on success
     // Verify that the descriptionTags are written correctly
     const descriptionTags = await exiftool.read(resolvedPath);
-    expect(descriptionTags.XPComment).to.equal("Describe image in English");
+    expect(descriptionTags.XPComment).to.equal("Describe image.");
     // Additional assertions can be made based on the expected behavior with the given write args
     expect(existsSync(`${resolvedPath}_original`)).to.be.false;
   });

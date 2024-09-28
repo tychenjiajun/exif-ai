@@ -26,6 +26,9 @@ verbose = Enable verbose output for debugging.
 tasks = List of tasks to perform ('description', 'tag', 'face').
 concurrency = The numbers of files to process concurrently in watch mode.
 face-group-ids = List of face group IDs to use for face recognition.
+repeat = The number of times to repeat the task if the AI-generated result is deemed unacceptable. This parameter helps ensure the quality of the output by allowing multiple attempts. Default value is 0. An AI-generated description is considered acceptable if it has more than 10 characters and is not in markdown format. AI-generated tags are considered acceptable if there are more than 1 tag and they are not in markdown format. Using this parameter will consume more tokens, which may incur additional costs. Use it at your own risk.
+description-prompt-input = Describe image.
+tag-prompt-input = Tag image in words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>
 `),
 );
 
@@ -49,6 +52,9 @@ verbose = 启用详细输出以进行调试。
 tasks = 要执行的任务列表（'description'，'tag'，'face'）。
 concurrency = 在监视模式下同时处理文件的数目。
 face-group-ids = 人脸搜索要使用的面部组ID列表。
+repeat = 如果AI生成结果被认为不可接受时，重复执行任务的次数。此参数通过允许多次尝试来确保输出质量。默认值为0。如果AI生成的描述超过10个字符且不是Markdown格式，则被视为可接受。AI生成的标签如果超过1个且不是Markdown格式，则被视为可接受。使用此参数将消耗更多令牌，可能会产生额外费用。使用时请自行承担风险。
+description-prompt-input = 描述图像。输出格式为一行文本。示例输出：这幅照片是在一个风景名胜区里拍摄的，可以看到很多人在那里参观。这些石柱高耸，顶部平坦，看起来像是人工雕琢而成，让人想起中国的园林风格。前景是熙熙攘攘的人群，他们似乎都在欣赏这令人叹为观止的景色。照片里的气氛是宁静的，让人感觉平静祥和。，Description":"这幅照片是在一个风景名胜区里拍摄的，可以看到很多人在那里参观。这些石柱高耸，顶部平坦，看起来像是人工雕琢而成，让人想起中国的园林风格。前景是熙熙攘攘的人群，他们似乎都在欣赏这令人叹为观止的景色。照片里的气氛是宁静的，让人感觉平静祥和。
+tag-prompt-input = 根据主题、对象、事件、地点对图像进行标签。输出格式：标签1，标签2，标签3，标签4，标签5，标签6，……，标签N。示例输出：石林，中国，中国石林，自然，喀斯特，山，旅行，旅游，景区，观光，人群，户外，公园，树木，天空，建筑。"
 `),
 );
 

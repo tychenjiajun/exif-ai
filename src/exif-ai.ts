@@ -31,7 +31,7 @@ async function findFilesRecursive(
 }
 const program = new Command();
 program
-  .version("3.2.1")
+  .version("3.2.2")
   .description(getText("description") ?? "")
   .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
   .option("-T, --tasks <tasks...>", getText("tasks"))
@@ -50,6 +50,7 @@ program
   .option("--ext <extensions...>", getText("ext"))
   .option("--concurrency <number>", getText("concurrency"))
   .option("--face-group-ids <groups...>", getText("face-group-ids"))
+  .option("--repeat <number>", getText("repeat"))
   .parse();
 
 const options = program.opts();
@@ -78,6 +79,7 @@ async function handleExecution(path: string) {
       avoidOverwrite: options.avoidOverwrite,
       doNotEndExifTool: Boolean(watchMode),
       faceGroupIds: options.faceGroupIds,
+      repeat: options.repeat,
     });
   } catch (error) {
     console.error(`Error processing file ${path}:`, error);

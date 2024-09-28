@@ -16,12 +16,16 @@ async function sizeHandle(
   const sharpInstance = await sharp(buffer);
   const { width = 0, height = 0 } = await sharpInstance.metadata();
   let done = await sharp(buffer)
+    .resize({
+      ...(width > height ? { width: 6000 } : { height: 6000 }),
+      withoutEnlargement: true,
+    })
     .jpeg({
       quality,
     })
     .toBuffer();
 
-  while (done.byteLength > 20_000_000) {
+  while (done.byteLength > 18_000_000) {
     quality = Math.max(quality - drop, 0);
     done = await sharp(buffer)
       .resize({

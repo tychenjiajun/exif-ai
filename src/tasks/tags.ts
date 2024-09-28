@@ -13,25 +13,42 @@ type TagKey2 = keyof {
 
 export type TagKey = Exclude<TagKey2, TagKey1>;
 
-function formatTags(tags: string | string[] | undefined) {
-  return typeof tags === "string"
-    ? tags
-        .replaceAll(/tag[0-9]+/g, "")
-        .replaceAll(/[\[\]\.{}<>/*'"()]/g, "")
-        .split(tags.includes("：") ? "：" : ":")
-        .at(-1)
-        ?.split(tags.includes(",") ? "," : "\n")
-        .map((s) =>
-          s
-            .trim()
-            .replace(/\n$/g, "")
-            .replace(/[0-9]+[ ]+(.*)/g, "$1"),
-        )
-        .filter(
-          (s) =>
-            s.length > 0 && [...s.matchAll(/ /g)].length <= 1 && s !== "\n",
-        )
-    : tags;
+function formatTags(tags: string | string[] | undefined): string[] {
+  const result =
+    typeof tags === "string"
+      ? Number(tags.match(/[0-9]+.*\n/g)?.length) > 1
+        ? (tags.match(/[0-9]+.*\n/g)?.map((s) => {
+            return s
+              .replaceAll(/tag[0-9]+/g, "")
+              .replaceAll(/[\[\]\.{}<>/*'"()。]/g, "")
+              .replace(/\n$/g, "")
+              .replace(/[0-9]+(.*)/g, "$1")
+              .trim();
+          }) ?? [])
+        : (tags
+            .replaceAll(/tag[0-9]+/g, "")
+            .replaceAll(/[\[\]\.{}<>/*'"()。]/g, "")
+            .split(tags.includes("：") ? "：" : ":")
+            .at(-1)
+            ?.split(
+              tags.includes("，") ? "，" : tags.includes(",") ? "," : "\n",
+            )
+            .map((s) =>
+              s
+                .trim()
+                .replace(/\n$/g, "")
+                .replace(/[0-9]+[ ]+(.*)/g, "$1"),
+            )
+            .filter(
+              (s) =>
+                s.length > 0 && [...s.matchAll(/ /g)].length <= 1 && s !== "\n",
+            ) ?? [])
+      : (tags ?? []);
+
+  // if (result.length === 1) {
+  //   return result.flatMap(r => formatTags(r));
+  // }
+  return result;
 }
 
 export async function getTags({
@@ -46,6 +63,7 @@ export async function getTags({
   additionalTags,
   path,
   file_id,
+  repeat,
 }: {
   buffer: Buffer;
   model?: string;
@@ -58,27 +76,32 @@ export async function getTags({
   additionalTags?: Readonly<string[]>;
   path: string;
   file_id?: string;
+  repeat?: number;
 }) {
   // Get tags from provider
-  let tags: string | string[] = [];
+  let tags: string[] = [];
 
   if (providerModule) {
-    try {
-      tags = await providerModule.getTags?.({
-        buffer,
-        model,
-        prompt: prompt,
-        providerArgs,
-        path,
-        file_id,
-      });
-    } catch (error) {
-      console.error("Failed to get tags from provider:", error);
-      return;
+    for (let i = 0; i < (repeat ?? 0) + 1; i++) {
+      try {
+        tags = formatTags(
+          await providerModule.getTags?.({
+            buffer,
+            model,
+            prompt: prompt,
+            providerArgs,
+            path,
+            file_id,
+          }),
+        );
+      } catch (error) {
+        if (verbose) console.error("Failed to get tags from provider:", error);
+      }
+      if (tags.length > 1) break;
     }
   }
 
-  const formatted = formatTags(tags)?.concat(additionalTags ?? []);
+  const formatted = tags?.concat(additionalTags ?? []);
 
   if (verbose) console.log("Tags are:", formatted);
 

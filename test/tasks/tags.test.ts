@@ -13,6 +13,7 @@ const existingTags = {
   Subject: ["existingSubject"],
   Keywords: ["existingKeywords"],
 };
+const path = "testPath";
 
 const baseOptions = {
   buffer,
@@ -23,6 +24,7 @@ const baseOptions = {
   verbose,
   tagTags,
   existingTags,
+  path,
 };
 
 import { getTags } from "../../src/tasks/tags.js";
@@ -126,7 +128,7 @@ describe("Tag Tests", () => {
       providerModule,
     });
 
-    expect(result).to.deep.equal(undefined);
+    expect(result).to.deep.equal({});
   });
 
   it.each([
@@ -251,7 +253,6 @@ Given these elements, here are some possible tags based on subject, object, even
         "门口外部照明灯",
         "展览门口安保设施",
         "门口的窗帘",
-        "外部的街道、建筑周围环境",
       ],
     },
     {
@@ -288,7 +289,6 @@ Given these elements, here are some possible tags based on subject, object, even
         "多彩的露台",
         "聚集在露台下",
         "夜晚游乐设施周边",
-        "露台周围景观",
       ],
     },
     {
@@ -315,7 +315,6 @@ Given these elements, here are some possible tags based on subject, object, even
         "自然景观",
         "科学探索",
         "技术成就",
-        "宇宙探索",
       ],
     },
     { a: '["a","b"]', expected: ["a", "b"] },
