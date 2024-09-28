@@ -56,7 +56,8 @@ Optional options:
 - `--avoid-overwrite`: Avoid overwriting if EXIF tags already exist in the file.
 - `--ext <extensions...>`: File extensions to watch. Only files with this extensions will be processed.
 - `--concurrency <number>`: The numbers of files to process concurrently in watch mode.
-- `--face-group-ids <group...>` List of face group IDs to use for face recognition.
+- `--face-group-ids <group...>`: List of face group IDs to use for face recognition.
+- `--repeat`: The number of times to repeat the task if the AI-generated result is deemed unacceptable. This parameter helps ensure the quality of the output by allowing multiple attempts. Default value is 0. An AI-generated description is considered acceptable if it has more than 10 characters and is not in markdown format. AI-generated tags are considered acceptable if there are more than 1 tag and they are not in markdown format. Using this parameter will consume more tokens, which may incur additional costs. Use it at your own risk.
 
 Example usage:
 
@@ -91,6 +92,7 @@ const options = {
   avoidOverwrite: false, // Avoid overwriting if EXIF tags already exist in the file
   doNotEndExifTool: false, // Do not end ExifTool process after writing metadata
   faceGroupIds: [], // List of face group IDs to use for face recognition
+  repeat: 0, // The number of times to repeat the task if the AI-generated result is deemed unacceptable
 };
 
 execute(options)

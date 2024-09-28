@@ -100,7 +100,7 @@ export async function getFaces({
       (k) => k != null,
     );
   } catch (error) {
-    console.error("Failed to get tags from provider:", error);
+    if (verbose) console.error("Failed to get faces", error);
     return;
   }
 }

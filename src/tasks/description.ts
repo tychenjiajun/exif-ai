@@ -16,6 +16,7 @@ export async function getDescription({
   existingTags,
   path,
   file_id,
+  repeat,
 }: {
   buffer: Buffer;
   model?: string;
@@ -27,23 +28,33 @@ export async function getDescription({
   existingTags?: Readonly<Tags>;
   path: string;
   file_id?: string;
+  repeat?: number;
 }) {
   // Get description from provider
   let description: string | undefined;
 
-  try {
-    description = await providerModule.getDescription?.({
-      buffer,
-      model,
-      prompt: prompt,
-      providerArgs,
-      path,
-      file_id,
-    });
-  } catch (error) {
-    console.error("Failed to get description from provider:", error);
-    return;
+  if (providerModule) {
+    for (let i = 0; i < (repeat ?? 0) + 1; i++) {
+      try {
+        description = await providerModule.getDescription?.({
+          buffer,
+          model,
+          prompt: prompt,
+          providerArgs,
+          path,
+          file_id,
+        });
+      } catch (error) {
+        if (verbose)
+          console.error("Failed to get description from provider:", error);
+      }
+      if (description && description.trim().length > 10 && !/[*#>`]/.test(description)) {
+        description = description.trim().replaceAll(/\n/g, "");
+        break;
+      }
+    }
   }
+
   if (verbose) console.log("Description is:", description);
 
   return description

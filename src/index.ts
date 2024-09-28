@@ -17,6 +17,7 @@ import { DescriptionKey, getDescription } from "./tasks/description.js";
 import { getTags, TagKey } from "./tasks/tags.js";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { getFaces } from "./tasks/face.js";
+import { getText } from "./fluent/index.js";
 
 if (
   !globalThis.fetch ||
@@ -66,8 +67,8 @@ export async function execute({
     "Caption-Abstract",
   ],
   tagTags = ["Subject", "TagsList", "Keywords"],
-  descriptionPrompt = `Describe image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"}`,
-  tagPrompt = `Tag image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"} words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
+  descriptionPrompt = getText('description-prompt-input') ?? `Describe image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"}`,
+  tagPrompt = getText('tag-prompt-input') ?? `Tag image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"} words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
   verbose = false,
   dry = false,
   writeArgs,
@@ -75,6 +76,7 @@ export async function execute({
   avoidOverwrite = false,
   doNotEndExifTool = false,
   faceGroupIds = [],
+  repeat = 0,
 }: {
   /**
    * Array of tasks to perform: 'description', 'tag', 'face'
@@ -136,6 +138,10 @@ export async function execute({
    * Array of face group IDs to use for face recognition
    */
   faceGroupIds?: string[];
+  /**
+   * Number of times to repeat the task if it does not return acceptable results
+   */
+  repeat?: number;
 }) {
   if (["description", "tag", "tags", "face"].every((t) => !tasks.includes(t)))
     return;
@@ -191,6 +197,12 @@ export async function execute({
       file_id = id;
     }
 
+    if (verbose) {
+      // log tasks' prompt
+      console.log("Description prompt:", descriptionPrompt);
+      console.log("Tag prompt:", tagPrompt);
+    }
+
     const [description, tags] = await Promise.all([
       tasks.includes("description")
         ? getDescription({
@@ -204,6 +216,7 @@ export async function execute({
             existingTags,
             path: resolvedPath,
             file_id,
+            repeat,
           })
         : undefined,
       tasks.includes("tag") || tasks.includes("tags")
@@ -218,6 +231,7 @@ export async function execute({
             additionalTags: faces,
             path: resolvedPath,
             file_id,
+            repeat,
           })
         : tasks.includes("face")
           ? getTags({
@@ -230,9 +244,10 @@ export async function execute({
               additionalTags: faces,
               path: resolvedPath,
               file_id,
+              repeat,
             })
           : undefined,
-    ]);
+    ] as const);
 
     const result = {
       ...description,
