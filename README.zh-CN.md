@@ -2,7 +2,7 @@
 
 [![NPM Downloads](https://img.shields.io/npm/dw/exif-ai)](https://www.npmjs.com/package/exif-ai)
 
-https://github.com/user-attachments/assets/c5370480-2dd9-4980-ad08-317e5634ab9d
+https://github.com/user-attachments/assets/a445d46a-0d3c-44a2-a42e-f98c23e9c1b4
 
 ## 关于
 
