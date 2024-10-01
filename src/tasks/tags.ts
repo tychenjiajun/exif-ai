@@ -23,6 +23,7 @@ function formatTags(tags: string | string[] | undefined): string[] {
               .replaceAll(/[\[\]\.{}<>/*'"()。]/g, "")
               .replace(/\n$/g, "")
               .replace(/[0-9]+(.*)/g, "$1")
+              .replace(/[：:]*/g, "")
               .trim();
           }) ?? [])
         : (tags
@@ -37,7 +38,8 @@ function formatTags(tags: string | string[] | undefined): string[] {
               s
                 .trim()
                 .replace(/\n$/g, "")
-                .replace(/[0-9]+[ ]+(.*)/g, "$1"),
+                .replace(/[0-9]+[ ]+(.*)/g, "$1")
+                .replace(/[：:]*/g, ""),
             )
             .filter(
               (s) =>

@@ -72,7 +72,6 @@ export async function getDescription({
               ],
             },
           ],
-          temperature: 0.5,
         }),
       },
     );
@@ -129,7 +128,6 @@ export async function getTags({
               ],
             },
           ],
-          temperature: 0.5,
         }),
       },
     );
