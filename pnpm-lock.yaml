@@ -15,8 +15,8 @@ importers:
         specifier: ^0.18.0
         version: 0.18.0
       '@google/generative-ai':
-        specifier: ^0.20.0
-        version: 0.20.0
+        specifier: ^0.21.0
+        version: 0.21.0
       chokidar:
         specifier: ^4.0.0
         version: 4.0.1
@@ -362,8 +362,8 @@ packages:
     resolution: {integrity: sha512-8Wfwu9q8F9g2FNnv82g6Ch/E1AW1wwljsUOolH5NEtdJdv0sZTuWvfCM7c3teB9dzNaJA8rn4khpidpozHWYEA==}
     engines: {node: '>=14.0.0', npm: '>=7.0.0'}
 
-  '@google/generative-ai@0.20.0':
-    resolution: {integrity: sha512-uJQNDr1sihvBJ9w8B0ESpNdX9aEueAMXgwnTuhTo+LnI7DD0M1KHnOWzxb2l6cM1rRHzvkdgJNNfeybcqg7uVg==}
+  '@google/generative-ai@0.21.0':
+    resolution: {integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==}
     engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/module-importer@1.0.1':
@@ -2294,7 +2294,7 @@ snapshots:
 
   '@fluent/bundle@0.18.0': {}
 
-  '@google/generative-ai@0.20.0': {}
+  '@google/generative-ai@0.21.0': {}
 
   '@humanwhocodes/module-importer@1.0.1': {}
 
