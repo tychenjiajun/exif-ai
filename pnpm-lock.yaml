@@ -43,7 +43,7 @@ importers:
         version: 0.5.9
       openai:
         specifier: ^4.63.0
-        version: 4.67.1
+        version: 4.67.2
       p-limit:
         specifier: ^6.1.0
         version: 6.1.0
@@ -641,8 +641,8 @@ packages:
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@18.19.54':
-    resolution: {integrity: sha512-+BRgt0G5gYjTvdLac9sIeE0iZcJxi4Jc4PV5EUzqi+88jmQLr+fRZdv2tCTV7IHKSGxM6SaLoOXQWWUiLUItMw==}
+  '@types/node@18.19.55':
+    resolution: {integrity: sha512-zzw5Vw52205Zr/nmErSEkN5FLqXPuKX/k5d1D7RKHATGqU7y6YfX9QxZraUzUrFGqH6XzOzG196BC35ltJC4Cw==}
 
   '@types/node@22.6.0':
     resolution: {integrity: sha512-QyR8d5bmq+eR72TwQDfujwShHMcIrWIYsaQFtXRE58MHPTEKUNxjxvl0yS0qPMds5xbSDWtp7ZpvGFtd7dfMdQ==}
@@ -1505,8 +1505,8 @@ packages:
   ollama@0.5.9:
     resolution: {integrity: sha512-F/KZuDRC+ZsVCuMvcOYuQ6zj42/idzCkkuknGyyGVmNStMZ/sU3jQpvhnl4SyC0+zBzLiKNZJnJeuPFuieWZvQ==}
 
-  openai@4.67.1:
-    resolution: {integrity: sha512-2YbRFy6qaYRJabK2zLMn4txrB2xBy0KP5g/eoqeSPTT31mIJMnkT75toagvfE555IKa2RdrzJrZwdDsUipsAMw==}
+  openai@4.67.2:
+    resolution: {integrity: sha512-u4FJFGXgqEHrCYcD5jAD4nHj6JCiicH+/dskQY7qka9R6hOw29R0kOz7GwcA9k2JKcLf86lzAWPtPagPbO8KnQ==}
     hasBin: true
     peerDependencies:
       zod: ^3.23.8
@@ -2472,7 +2472,7 @@ snapshots:
       '@types/node': 22.6.0
       form-data: 4.0.0
 
-  '@types/node@18.19.54':
+  '@types/node@18.19.55':
     dependencies:
       undici-types: 5.26.5
 
@@ -3401,9 +3401,9 @@ snapshots:
     dependencies:
       whatwg-fetch: 3.6.20
 
-  openai@4.67.1:
+  openai@4.67.2:
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
