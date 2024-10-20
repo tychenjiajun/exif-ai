@@ -43,7 +43,7 @@ importers:
         version: 0.5.9
       openai:
         specifier: ^4.63.0
-        version: 4.68.0
+        version: 4.68.1
       p-limit:
         specifier: ^6.1.0
         version: 6.1.0
@@ -1149,8 +1149,8 @@ packages:
   form-data-encoder@1.7.2:
     resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
 
-  form-data@3.0.1:
-    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
+  form-data@3.0.2:
+    resolution: {integrity: sha512-sJe+TQb2vIaIyO783qN6BlMYWMw3WBOHA1Ay2qxsnjuafEOQFJ2JakedOQirT6D5XPRxDvS7AHYyem9fTpb4LQ==}
     engines: {node: '>= 6'}
 
   form-data@4.0.1:
@@ -1502,8 +1502,8 @@ packages:
   ollama@0.5.9:
     resolution: {integrity: sha512-F/KZuDRC+ZsVCuMvcOYuQ6zj42/idzCkkuknGyyGVmNStMZ/sU3jQpvhnl4SyC0+zBzLiKNZJnJeuPFuieWZvQ==}
 
-  openai@4.68.0:
-    resolution: {integrity: sha512-cVH0WMKd4cColyorwqo+Gn08lN8LQ8uKLMfWXFfvnedrLq3lCH6lRd0Rd0XJRunyfgNve/L9E7uZLAii39NBkw==}
+  openai@4.68.1:
+    resolution: {integrity: sha512-C9XmYRHgra1U1G4GGFNqRHQEjxhoOWbQYR85IibfJ0jpHUhOm4/lARiKaC/h3zThvikwH9Dx/XOKWPNVygIS3g==}
     hasBin: true
     peerDependencies:
       zod: ^3.23.8
@@ -3076,7 +3076,7 @@ snapshots:
 
   form-data-encoder@1.7.2: {}
 
-  form-data@3.0.1:
+  form-data@3.0.2:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -3394,7 +3394,7 @@ snapshots:
     dependencies:
       whatwg-fetch: 3.6.20
 
-  openai@4.68.0:
+  openai@4.68.1:
     dependencies:
       '@types/node': 18.19.56
       '@types/node-fetch': 2.6.11
@@ -3671,7 +3671,7 @@ snapshots:
 
   tencentcloud-sdk-nodejs-common@4.0.938:
     dependencies:
-      form-data: 3.0.1
+      form-data: 3.0.2
       get-stream: 6.0.1
       https-proxy-agent: 5.0.1
       is-stream: 2.0.1
