@@ -24,8 +24,8 @@ importers:
         specifier: 12.1.0
         version: 12.1.0
       exiftool-vendored:
-        specifier: ^28.2.1
-        version: 28.3.1
+        specifier: ^29.0.0
+        version: 29.0.0
       file-type:
         specifier: ^19.5.0
         version: 19.6.0
@@ -1070,16 +1070,16 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
-  exiftool-vendored.exe@12.96.0:
-    resolution: {integrity: sha512-pKPN9F/Evw2yyO5/+ml3spbXIqejzOxyF7jEnj8tLU2JPSmIlziPUZ75XIhcPbilX86jVKmuiso7FUDicOg8pQ==}
+  exiftool-vendored.exe@13.0.0:
+    resolution: {integrity: sha512-4zAMuFGgxZkOoyQIzZMHv1HlvgyJK3AkNqjAgm8A8V0UmOZO7yv3pH49cDV1OduzFJqgs6yQ6eG4OGydhKtxlg==}
     os: [win32]
 
-  exiftool-vendored.pl@12.96.0:
-    resolution: {integrity: sha512-v4nGnovAMBsTfOWhwAcOiRiq/8kuJOo3GUMHNpug7Mr4jLz3tmWEo7DdNyOYmpcvWbA6smOTG0SmwsrY8fsW+A==}
+  exiftool-vendored.pl@13.0.1:
+    resolution: {integrity: sha512-+BRRzjselpWudKR0ltAW5SUt9T82D+gzQN8DdOQUgnSVWWp7oLCeTGBRptbQz+436Ihn/mPzmo/xnf0cv/Qw1A==}
     os: ['!win32']
 
-  exiftool-vendored@28.3.1:
-    resolution: {integrity: sha512-S2LNaGNu4wBv6q0f/lvst+6DhQrYgc27oDsTgRvx8dGK/5Z1MK4PyMfKCb5GCeCr/nSTGsRnoJlxxRhO1YkBsA==}
+  exiftool-vendored@29.0.0:
+    resolution: {integrity: sha512-BW2Fr7okYP1tN7KIIREy8gOx9WggpPsbKc3BTAS4dLgSup50LjdQttxF9kyDP+27ZayllK+d0rfMYPAixPBtQw==}
 
   expect-type@1.1.0:
     resolution: {integrity: sha512-bFi65yM+xZgk+u/KRIpekdSYkTB5W1pEf0Lt8Q8Msh7b+eQ7LXVtIB1Bkm4fvclDEL1b2CZkMhv2mOeF8tMdkA==}
@@ -2963,13 +2963,13 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
-  exiftool-vendored.exe@12.96.0:
+  exiftool-vendored.exe@13.0.0:
     optional: true
 
-  exiftool-vendored.pl@12.96.0:
+  exiftool-vendored.pl@13.0.1:
     optional: true
 
-  exiftool-vendored@28.3.1:
+  exiftool-vendored@29.0.0:
     dependencies:
       '@photostructure/tz-lookup': 11.0.0
       '@types/luxon': 3.4.2
@@ -2977,8 +2977,8 @@ snapshots:
       he: 1.2.0
       luxon: 3.5.0
     optionalDependencies:
-      exiftool-vendored.exe: 12.96.0
-      exiftool-vendored.pl: 12.96.0
+      exiftool-vendored.exe: 13.0.0
+      exiftool-vendored.pl: 13.0.1
 
   expect-type@1.1.0: {}
 
