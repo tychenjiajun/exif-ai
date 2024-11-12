@@ -52,7 +52,7 @@ importers:
         version: 0.33.5
       tencentcloud-sdk-nodejs-iai:
         specifier: ^4.0.918
-        version: 4.0.918
+        version: 4.0.971
       ts-extras:
         specifier: ^0.13.0
         version: 0.13.0
@@ -1764,12 +1764,12 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tencentcloud-sdk-nodejs-common@4.0.938:
-    resolution: {integrity: sha512-lNYig9PSM1SaYyZ9SPamy6wJPsixVNDsvL9KUQbUyE2eiD4RgGORB9bzlLvQf9nqQX5E3GHwksQRYZKS7FZ5Bw==}
+  tencentcloud-sdk-nodejs-common@4.0.971:
+    resolution: {integrity: sha512-gXRzcCPkwRnqLYYTxwhbQny6CNl8DcIW/29zMZOLniRNvX3O21tJ7J86XW6zC0xLREeqN9+Tta8kURZb0ZxLWw==}
     engines: {node: '>=10'}
 
-  tencentcloud-sdk-nodejs-iai@4.0.918:
-    resolution: {integrity: sha512-ycyDpNkQkRcceHzXXjy4osUSKfrwd+U/R+a6FJf7WIV39QX8/5D9Ctk6ChP6boa3GF8trLagx2zguU3Yl/Uckw==}
+  tencentcloud-sdk-nodejs-iai@4.0.971:
+    resolution: {integrity: sha512-slTHeyoKZ7R5tgXJQAESoPfaybjMsBHYimLdV+yznB0ceNuybQnXWQWzsxCP0YuoSuoviCEvgPt0lp3dxdNjNg==}
     engines: {node: '>=10'}
 
   test-exclude@7.0.1:
@@ -1829,8 +1829,8 @@ packages:
   tslib@1.13.0:
     resolution: {integrity: sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==}
 
-  tslib@2.7.0:
-    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -2131,7 +2131,7 @@ snapshots:
 
   '@emnapi/runtime@1.2.0':
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
     optional: true
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -3639,7 +3639,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tencentcloud-sdk-nodejs-common@4.0.938:
+  tencentcloud-sdk-nodejs-common@4.0.971:
     dependencies:
       form-data: 3.0.2
       get-stream: 6.0.1
@@ -3653,9 +3653,9 @@ snapshots:
       - encoding
       - supports-color
 
-  tencentcloud-sdk-nodejs-iai@4.0.918:
+  tencentcloud-sdk-nodejs-iai@4.0.971:
     dependencies:
-      tencentcloud-sdk-nodejs-common: 4.0.938
+      tencentcloud-sdk-nodejs-common: 4.0.971
       tslib: 1.13.0
     transitivePeerDependencies:
       - encoding
@@ -3707,7 +3707,7 @@ snapshots:
 
   tslib@1.13.0: {}
 
-  tslib@2.7.0:
+  tslib@2.8.1:
     optional: true
 
   type-check@0.4.0:
