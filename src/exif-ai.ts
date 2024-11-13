@@ -71,6 +71,7 @@ async function handleExecution(path: string) {
       model: options.model,
       descriptionTags: options.descriptionTags,
       tagTags: options.tagTags,
+      tagPrompt: options.tagPrompt,
       descriptionPrompt: options.descriptionPrompt,
       verbose: options.verbose,
       dry: options.dryRun,
