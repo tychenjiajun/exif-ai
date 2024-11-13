@@ -2,30 +2,30 @@ import sharp from "sharp";
 import { env } from "node:process";
 
 interface Result {
-  RetCode: number;
-  Candidates: Candidate[];
-  FaceRect: FaceRect;
+  RetCode?: number;
+  Candidates?: Candidate[];
+  FaceRect?: FaceRect;
 }
 
 interface Candidate {
-  PersonId: string;
-  FaceId: string;
-  Score: number;
-  PersonName: string;
-  Gender: number;
-  PersonGroupInfos: PersonGroupInfo[];
+  PersonId?: string;
+  FaceId?: string;
+  Score?: number;
+  PersonName?: string;
+  Gender?: number;
+  PersonGroupInfos?: PersonGroupInfo[];
 }
 
 interface PersonGroupInfo {
-  GroupId: string;
-  PersonExDescriptions: any[];
+  GroupId?: string;
+  PersonExDescriptions?: any[];
 }
 
 interface FaceRect {
-  X: number;
-  Y: number;
-  Width: number;
-  Height: number;
+  X?: number;
+  Y?: number;
+  Width?: number;
+  Heights?: number;
 }
 
 async function sizeHandle(
@@ -96,7 +96,7 @@ export async function getFaces({
       console.log(a);
     }
 
-    return a?.Results?.map((k) => k.Candidates[0].PersonName).filter(
+    return a?.Results?.map((k) => k.Candidates?.[0].PersonName).filter(
       (k) => k != null,
     );
   } catch (error) {
