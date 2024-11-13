@@ -31,7 +31,7 @@ async function findFilesRecursive(
 }
 const program = new Command();
 program
-  .version("3.2.3")
+  .version("3.2.4")
   .description(getText("description") ?? "")
   .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
   .option("-T, --tasks <tasks...>", getText("tasks"))
