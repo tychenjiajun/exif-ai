@@ -40,7 +40,7 @@ importers:
         version: 3.3.2
       ollama:
         specifier: ^0.5.8
-        version: 0.5.9
+        version: 0.5.10
       openai:
         specifier: ^4.63.0
         version: 4.68.3
@@ -1496,8 +1496,8 @@ packages:
   normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
 
-  ollama@0.5.9:
-    resolution: {integrity: sha512-F/KZuDRC+ZsVCuMvcOYuQ6zj42/idzCkkuknGyyGVmNStMZ/sU3jQpvhnl4SyC0+zBzLiKNZJnJeuPFuieWZvQ==}
+  ollama@0.5.10:
+    resolution: {integrity: sha512-M5O4u6S6yZeeKFrKA7ZfGGLjK54otOVGPrOUc3N64zSTpz9J+x/nh93dmD6Py7YLgXzq9I6Nq+PDDoaqJuV3LQ==}
 
   openai@4.68.3:
     resolution: {integrity: sha512-KfnhZ7mR9rK/f0O1vJGRnB3aYuDGgVkNIegJFxGviV0SGDVGlTha7FR8UV9P0NbO6l/podml0E/rk2R1egY94w==}
@@ -3362,7 +3362,7 @@ snapshots:
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
-  ollama@0.5.9:
+  ollama@0.5.10:
     dependencies:
       whatwg-fetch: 3.6.20
 
