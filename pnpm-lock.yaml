@@ -49,7 +49,7 @@ dependencies:
     version: 0.33.5
   tencentcloud-sdk-nodejs-iai:
     specifier: ^4.0.918
-    version: 4.0.972
+    version: 4.0.973
   ts-extras:
     specifier: ^0.13.0
     version: 0.13.0
@@ -3014,8 +3014,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tencentcloud-sdk-nodejs-common@4.0.972:
-    resolution: {integrity: sha512-mbIQ8WYssvxRrE68aqiqGkbeAtqHPtpmyJhn/dxMH10jv5VNyGS+Z9Y2FlTtTLyzkAnVFkK6I84KiBiOIDZ5nA==}
+  /tencentcloud-sdk-nodejs-common@4.0.973:
+    resolution: {integrity: sha512-iuOE2LWlBvE/xgU/0BG3S8PdW5FHBYdkstSiSUIUkL8GdibwDs5rDCUoEFWxJjYCnrF+h+5v6A5wrs6u6pMD7g==}
     engines: {node: '>=10'}
     dependencies:
       form-data: 3.0.2
@@ -3031,11 +3031,11 @@ packages:
       - supports-color
     dev: false
 
-  /tencentcloud-sdk-nodejs-iai@4.0.972:
-    resolution: {integrity: sha512-NEa9jDO1Bz8EkqBDQ9wWHuvewRtF3pu20DcwxrVff699gHMs66OQKTTmNMKJ59UIYARtxUL3K4Ocypkq1wwzIA==}
+  /tencentcloud-sdk-nodejs-iai@4.0.973:
+    resolution: {integrity: sha512-DLTGPJoqMxx4syGFxW8l/jmHHyv21bd3e+tWXhgbRsrm6eS5Yws2upLWCtH98vhssNaJuCPadGCUlqV081KNBg==}
     engines: {node: '>=10'}
     dependencies:
-      tencentcloud-sdk-nodejs-common: 4.0.972
+      tencentcloud-sdk-nodejs-common: 4.0.973
       tslib: 1.13.0
     transitivePeerDependencies:
       - encoding
