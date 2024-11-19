@@ -84,7 +84,7 @@ devDependencies:
     version: 7.1.0(eslint@9.15.0)
   eslint-plugin-unicorn:
     specifier: ^56.0.0
-    version: 56.0.0(eslint@9.15.0)
+    version: 56.0.1(eslint@9.15.0)
   globals:
     specifier: ^15.9.0
     version: 15.12.0
@@ -1392,7 +1392,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001680
-      electron-to-chromium: 1.5.57
+      electron-to-chromium: 1.5.63
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.2)
     dev: true
@@ -1569,8 +1569,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /electron-to-chromium@1.5.57:
-    resolution: {integrity: sha512-xS65H/tqgOwUBa5UmOuNSLuslDo7zho0y/lgQw35pnrqiZh7UOWHCeL/Bt6noJATbA6tpQJGCifsFsIRZj1Fqg==}
+  /electron-to-chromium@1.5.63:
+    resolution: {integrity: sha512-ddeXKuY9BHo/mw145axlyWjlJ1UBt4WK3AlvkT7W2AbqfRQoacVoRUCF6wL3uIx/8wT9oLKXzI+rFqHHscByaA==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -1693,8 +1693,8 @@ packages:
       eslint: 9.15.0
     dev: true
 
-  /eslint-plugin-unicorn@56.0.0(eslint@9.15.0):
-    resolution: {integrity: sha512-aXpddVz/PQMmd69uxO98PA4iidiVNvA0xOtbpUoz1WhBd4RxOQQYqN618v68drY0hmy5uU2jy1bheKEVWBjlPw==}
+  /eslint-plugin-unicorn@56.0.1(eslint@9.15.0):
+    resolution: {integrity: sha512-FwVV0Uwf8XPfVnKSGpMg7NtlZh0G0gBarCaFcMUOoqPxXryxdYxTRRv4kH6B9TFCVIrjRXG+emcxIk2ayZilog==}
     engines: {node: '>=18.18'}
     peerDependencies:
       eslint: '>=8.56.0'
