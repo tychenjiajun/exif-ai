@@ -78,7 +78,7 @@ devDependencies:
     version: 9.16.0
   eslint-plugin-n:
     specifier: ^17.10.2
-    version: 17.15.0(eslint@9.16.0)
+    version: 17.15.1(eslint@9.16.0)
   eslint-plugin-promise:
     specifier: ^7.1.0
     version: 7.2.1(eslint@9.16.0)
@@ -1679,8 +1679,8 @@ packages:
       eslint-compat-utils: 0.5.1(eslint@9.16.0)
     dev: true
 
-  /eslint-plugin-n@17.15.0(eslint@9.16.0):
-    resolution: {integrity: sha512-xF3zJkOfLlFOm5TvmqmsnA9/fO+/z2pYs0dkuKXKN/ymS6UB1yEcaoIkqxLKQ9Dw/WmLX/Tdh6/5ZS5azVixFQ==}
+  /eslint-plugin-n@17.15.1(eslint@9.16.0):
+    resolution: {integrity: sha512-KFw7x02hZZkBdbZEFQduRGH4VkIH4MW97ClsbAM4Y4E6KguBJWGfWG1P4HEIpZk2bkoWf0bojpnjNAhYQP8beA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=8.23.0'
