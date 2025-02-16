@@ -63,7 +63,7 @@ devDependencies:
     version: 9.20.0
   '@types/node':
     specifier: ^22.5.1
-    version: 22.10.6
+    version: 22.13.4
   '@vitest/coverage-istanbul':
     specifier: ^3.0.0
     version: 3.0.5(vitest@3.0.5)
@@ -99,7 +99,7 @@ devDependencies:
     version: 8.24.0(eslint@9.20.1)(typescript@5.7.3)
   vitest:
     specifier: ^3.0.0
-    version: 3.0.5(@types/node@22.10.6)(@vitest/ui@3.0.5)
+    version: 3.0.5(@types/node@22.13.4)(@vitest/ui@3.0.5)
 
 packages:
 
@@ -1053,7 +1053,7 @@ packages:
   /@types/node-fetch@2.6.12:
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
     dependencies:
-      '@types/node': 22.10.6
+      '@types/node': 22.13.4
       form-data: 4.0.1
     dev: false
 
@@ -1063,8 +1063,8 @@ packages:
       undici-types: 5.26.5
     dev: false
 
-  /@types/node@22.10.6:
-    resolution: {integrity: sha512-qNiuwC4ZDAUNcY47xgaSuS92cjf8JbSUoaKS77bmLG1rU7MlATVSiw/IlrjtIyyskXBZ8KkNfjK/P5na7rgXbQ==}
+  /@types/node@22.13.4:
+    resolution: {integrity: sha512-ywP2X0DYtX3y08eFVx5fNIw7/uIv8hYUKgXoK8oayJlLnKcRfEYCxWMVE1XagUdVtCJlZT1AU4LXEABW+L1Peg==}
     dependencies:
       undici-types: 6.20.0
 
@@ -1203,7 +1203,7 @@ packages:
       magicast: 0.3.5
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.0.5(@types/node@22.10.6)(@vitest/ui@3.0.5)
+      vitest: 3.0.5(@types/node@22.13.4)(@vitest/ui@3.0.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1231,7 +1231,7 @@ packages:
       '@vitest/spy': 3.0.5
       estree-walker: 3.0.3
       magic-string: 0.30.17
-      vite: 6.0.11(@types/node@22.10.6)
+      vite: 6.0.11(@types/node@22.13.4)
     dev: true
 
   /@vitest/pretty-format@3.0.5:
@@ -1273,7 +1273,7 @@ packages:
       sirv: 3.0.0
       tinyglobby: 0.2.10
       tinyrainbow: 2.0.0
-      vitest: 3.0.5(@types/node@22.10.6)(@vitest/ui@3.0.5)
+      vitest: 3.0.5(@types/node@22.13.4)(@vitest/ui@3.0.5)
     dev: true
 
   /@vitest/utils@3.0.5:
@@ -3316,7 +3316,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite-node@3.0.5(@types/node@22.10.6):
+  /vite-node@3.0.5(@types/node@22.13.4):
     resolution: {integrity: sha512-02JEJl7SbtwSDJdYS537nU6l+ktdvcREfLksk/NDAqtdKWGqHl+joXzEubHROmS3E6pip+Xgu2tFezMu75jH7A==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
@@ -3325,7 +3325,7 @@ packages:
       debug: 4.4.0
       es-module-lexer: 1.6.0
       pathe: 2.0.2
-      vite: 6.0.11(@types/node@22.10.6)
+      vite: 6.0.11(@types/node@22.13.4)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -3341,7 +3341,7 @@ packages:
       - yaml
     dev: true
 
-  /vite@6.0.11(@types/node@22.10.6):
+  /vite@6.0.11(@types/node@22.13.4):
     resolution: {integrity: sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
@@ -3381,7 +3381,7 @@ packages:
       yaml:
         optional: true
     dependencies:
-      '@types/node': 22.10.6
+      '@types/node': 22.13.4
       esbuild: 0.24.2
       postcss: 8.5.1
       rollup: 4.34.2
@@ -3389,7 +3389,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@3.0.5(@types/node@22.10.6)(@vitest/ui@3.0.5):
+  /vitest@3.0.5(@types/node@22.13.4)(@vitest/ui@3.0.5):
     resolution: {integrity: sha512-4dof+HvqONw9bvsYxtkfUp2uHsTN9bV2CZIi1pWgoFpL1Lld8LA1ka9q/ONSsoScAKG7NVGf2stJTI7XRkXb2Q==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
@@ -3417,7 +3417,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 22.10.6
+      '@types/node': 22.13.4
       '@vitest/expect': 3.0.5
       '@vitest/mocker': 3.0.5(vite@6.0.11)
       '@vitest/pretty-format': 3.0.5
@@ -3436,8 +3436,8 @@ packages:
       tinyexec: 0.3.2
       tinypool: 1.0.2
       tinyrainbow: 2.0.0
-      vite: 6.0.11(@types/node@22.10.6)
-      vite-node: 3.0.5(@types/node@22.10.6)
+      vite: 6.0.11(@types/node@22.13.4)
+      vite-node: 3.0.5(@types/node@22.13.4)
       why-is-node-running: 2.3.0
     transitivePeerDependencies:
       - jiti
