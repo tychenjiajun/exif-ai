@@ -37,7 +37,7 @@ dependencies:
     version: 3.3.2
   ollama:
     specifier: ^0.5.8
-    version: 0.5.13
+    version: 0.5.14
   openai:
     specifier: ^4.63.0
     version: 4.85.4
@@ -2643,8 +2643,8 @@ packages:
       validate-npm-package-license: 3.0.4
     dev: true
 
-  /ollama@0.5.13:
-    resolution: {integrity: sha512-qK3eE2GjMYjCiTknEJfAHjbUzUqgVtf9qtzjxWrkwBZgBG7kOB6Z4+Ov4fbvDjmKKHv+rpuTsWFg4jZvVjNBtQ==}
+  /ollama@0.5.14:
+    resolution: {integrity: sha512-pvOuEYa2WkkAumxzJP0RdEYHkbZ64AYyyUszXVX7ruLvk5L+EiO2G71da2GqEQ4IAk4j6eLoUbGk5arzFT1wJA==}
     dependencies:
       whatwg-fetch: 3.6.20
     dev: false
