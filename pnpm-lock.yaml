@@ -40,7 +40,7 @@ dependencies:
     version: 0.5.13
   openai:
     specifier: ^4.63.0
-    version: 4.85.4
+    version: 4.86.1
   p-limit:
     specifier: ^6.1.0
     version: 6.2.0
@@ -2642,8 +2642,8 @@ packages:
       whatwg-fetch: 3.6.20
     dev: false
 
-  /openai@4.85.4:
-    resolution: {integrity: sha512-Nki51PBSu+Aryo7WKbdXvfm0X/iKkQS2fq3O0Uqb/O3b4exOZFid2te1BZ52bbO5UwxQZ5eeHJDCTqtrJLPw0w==}
+  /openai@4.86.1:
+    resolution: {integrity: sha512-x3iCLyaC3yegFVZaxOmrYJjitKxZ9hpVbLi+ZlT5UHuHTMlEQEbKXkGOM78z9qm2T5GF+XRUZCP2/aV4UPFPJQ==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
