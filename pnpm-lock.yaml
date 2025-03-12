@@ -40,7 +40,7 @@ dependencies:
     version: 0.5.13
   openai:
     specifier: ^4.63.0
-    version: 4.85.4
+    version: 4.87.3
   p-limit:
     specifier: ^6.1.0
     version: 6.2.0
@@ -1055,8 +1055,8 @@ packages:
       form-data: 4.0.2
     dev: false
 
-  /@types/node@18.19.76:
-    resolution: {integrity: sha512-yvR7Q9LdPz2vGpmpJX5LolrgRdWvB67MJKDPSgIIzpFbaf9a1j/f5DnLp5VDyHGMR0QZHlTr1afsD87QCXFHKw==}
+  /@types/node@18.19.80:
+    resolution: {integrity: sha512-kEWeMwMeIvxYkeg1gTc01awpwLbfMRZXdIhwRcakd/KlK53jmRC26LqcbIt7fnAQTu5GzlnWmzA3H6+l1u6xxQ==}
     dependencies:
       undici-types: 5.26.5
     dev: false
@@ -2648,8 +2648,8 @@ packages:
       whatwg-fetch: 3.6.20
     dev: false
 
-  /openai@4.85.4:
-    resolution: {integrity: sha512-Nki51PBSu+Aryo7WKbdXvfm0X/iKkQS2fq3O0Uqb/O3b4exOZFid2te1BZ52bbO5UwxQZ5eeHJDCTqtrJLPw0w==}
+  /openai@4.87.3:
+    resolution: {integrity: sha512-d2D54fzMuBYTxMW8wcNmhT1rYKcTfMJ8t+4KjH2KtvYenygITiGBgHoIrzHwnDQWW+C5oCA+ikIR2jgPCFqcKQ==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -2660,7 +2660,7 @@ packages:
       zod:
         optional: true
     dependencies:
-      '@types/node': 18.19.76
+      '@types/node': 18.19.80
       '@types/node-fetch': 2.6.12
       abort-controller: 3.0.0
       agentkeepalive: 4.6.0
