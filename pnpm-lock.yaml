@@ -22,7 +22,7 @@ dependencies:
     version: 12.1.0
   exiftool-vendored:
     specifier: ^29.0.0
-    version: 29.1.0
+    version: 29.2.0
   file-type:
     specifier: ^19.5.0
     version: 19.6.0
@@ -1889,22 +1889,22 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /exiftool-vendored.exe@13.17.0:
-    resolution: {integrity: sha512-cXm3mTVgagHC0iDH6gsJ+l/V8JoQqO4ISt6t5xdLlqtA5kEBdDlp/Szle7LE4aPPTp7v38y14VCuAc5cgRduow==}
+  /exiftool-vendored.exe@13.25.0:
+    resolution: {integrity: sha512-TTc8XL07ApDQl/+mB+ocbFIU3vMhqtHyilF508cyZ0mMyp6S+5d7ETyoGhndylTCtZRkp6n3LPh3uPpUrYrrOA==}
     os: [win32]
     requiresBuild: true
     dev: false
     optional: true
 
-  /exiftool-vendored.pl@13.17.0:
-    resolution: {integrity: sha512-HHR4vVghUAIYYYqQv5m3VfPXkM0e5/nqDKy9B0MtFNPUQT+ecWH5Ka/yKtroHCacqDpPLrBpSeHmY+IiH0CuKg==}
+  /exiftool-vendored.pl@13.25.0:
+    resolution: {integrity: sha512-aTIKz/E+UO1fayrPUy/6OoBC+ryjL57rqew4uFQPa3Ed5dle0W8YHjkROvd24EkQgRX4wmmskPOAbtAW8fvQRQ==}
     os: ['!win32']
     requiresBuild: true
     dev: false
     optional: true
 
-  /exiftool-vendored@29.1.0:
-    resolution: {integrity: sha512-wh5JXV6HGAkHJFj/MNnTokc6c7saZS+0/ixjO/q//YZVIlLHmdZW6zidFpj0acHP6cCkWzjCEpspLYkgOo2U7A==}
+  /exiftool-vendored@29.2.0:
+    resolution: {integrity: sha512-bZnjVAV/0T++o9gPf8uIa4B6DsixnkLTNirD2xM6ciRXgonp28viFG/D3bZiXUrRRV9u3uUmZS/ipieQcEMzWA==}
     dependencies:
       '@photostructure/tz-lookup': 11.1.0
       '@types/luxon': 3.4.2
@@ -1912,8 +1912,8 @@ packages:
       he: 1.2.0
       luxon: 3.5.0
     optionalDependencies:
-      exiftool-vendored.exe: 13.17.0
-      exiftool-vendored.pl: 13.17.0
+      exiftool-vendored.exe: 13.25.0
+      exiftool-vendored.pl: 13.25.0
     dev: false
 
   /expect-type@1.2.0:
