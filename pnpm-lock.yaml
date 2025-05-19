@@ -49,7 +49,7 @@ dependencies:
     version: 0.33.5
   tencentcloud-sdk-nodejs-iai:
     specifier: ^4.0.918
-    version: 4.0.978
+    version: 4.1.36
   ts-extras:
     specifier: ^0.13.0
     version: 0.13.0
@@ -264,8 +264,8 @@ packages:
       uuid: 9.0.1
     dev: false
 
-  /@emnapi/runtime@1.3.1:
-    resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
+  /@emnapi/runtime@1.4.3:
+    resolution: {integrity: sha512-pBPWdu6MLKROBX05wSNKcNb++m5Er+KQ9QkB+WVM+pW2Kx9hoSrVTnu3BdkI5eBLZoKu/J6mW/B6i6bJB2ytXQ==}
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
@@ -766,7 +766,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@emnapi/runtime': 1.3.1
+      '@emnapi/runtime': 1.4.3
     dev: false
     optional: true
 
@@ -1307,7 +1307,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1381,8 +1381,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /bignumber.js@9.1.2:
-    resolution: {integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==}
+  /bignumber.js@9.3.0:
+    resolution: {integrity: sha512-EM7aMFTXbptt/wZdMlBv2t8IViwQL+h6SLHosp8Yf0dqJMTnY6iL32opnAB6kAdL0SZPuvcAzFr31o0c/R3/RA==}
     dev: false
 
   /brace-expansion@1.1.11:
@@ -1560,6 +1560,18 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.3
+
+  /debug@4.4.1:
+    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+    dev: false
 
   /deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -2251,7 +2263,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.0
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2446,7 +2458,7 @@ packages:
   /json-bigint@1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
     dependencies:
-      bignumber.js: 9.1.2
+      bignumber.js: 9.3.0
     dev: false
 
   /json-buffer@3.0.1:
@@ -3087,8 +3099,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /tencentcloud-sdk-nodejs-common@4.0.978:
-    resolution: {integrity: sha512-rtW30sZkdt4diUUQNok1A0tjNEZ5seyuPEHX76XrR7CbJOS3vKouuE3taYbGjPTB4gz1xfiJkBaLuAYGky4vrg==}
+  /tencentcloud-sdk-nodejs-common@4.1.1:
+    resolution: {integrity: sha512-ipUKFgaAHwAFRI5MiWGvKAle0dilXJ/EzVoJNvOg2FTHSjtPbD1kbaOWuNKG2l1v3C1NtMMSbRRaWFi3HQWz3w==}
     engines: {node: '>=10'}
     dependencies:
       form-data: 3.0.3
@@ -3104,11 +3116,11 @@ packages:
       - supports-color
     dev: false
 
-  /tencentcloud-sdk-nodejs-iai@4.0.978:
-    resolution: {integrity: sha512-j2Vvfm/Ig8AVaaEMXu2UeL5+YPZ9kbLlSwumfdZ4v/suuEjmIxWG4xMFEu/CZLJfHQNLGfFfmu80/LYhBJoVOA==}
+  /tencentcloud-sdk-nodejs-iai@4.1.36:
+    resolution: {integrity: sha512-ku4gap9SqmwUky6FiRHYFExaaDm2dnNtOlXwb9ROQZyWoLQ9/X/cl45Cak6TbEiB3SoNi0aq3UrJYY9VhCTZHQ==}
     engines: {node: '>=10'}
     dependencies:
-      tencentcloud-sdk-nodejs-common: 4.0.978
+      tencentcloud-sdk-nodejs-common: 4.1.1
       tslib: 1.13.0
     transitivePeerDependencies:
       - encoding
