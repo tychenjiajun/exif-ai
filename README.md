@@ -7,7 +7,6 @@ https://github.com/user-attachments/assets/a445d46a-0d3c-44a2-a42e-f98c23e9c1b4
 _Read this in other languages:_
 [_简体中文_](README.zh-CN.md)
 
-
 ## About
 
 _Exif AI_ is a powerful CLI tool designed to write AI-generated image descriptions and/or tags directly into the metadata of image files. This tool leverages advanced AI models to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
@@ -36,11 +35,11 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-a, --api-provider <value>`: Name of the AI provider to use (`ollama` for Ollama, `zhipu` for ZhipuAI, `google` for Google Gemini, `coze_bot` for Coze Bot, `openai` for OpenAI).
+- `-a, --api-provider <value>`: Name of the AI provider to use (`openai`, `google`, `anthropic`, `mistral`, `ollama`).
 
 Optional options:
 
-- `-T, --tasks <tasks...>`: List of tasks to perform ('description', 'tag', 'face').
+- `-T, --tasks <tasks...>`: List of tasks to perform ('description', 'tag').
 - `-i, --input <file>` Path to the input image file.
 - `-p, --description-prompt <text>`: Custom prompt for the AI provider to generate description. Defaults to a generic image description prompt.
 - `--tag-prompt <text>`: Custom prompt for the AI provider to generate tags. Defaults to a generic image tagging prompt.
@@ -51,11 +50,7 @@ Optional options:
 - `-d, --dry-run`: Preview AI-generated content without writing to the image file.
 - `--exif-tool-write-args <args...>`: Additional ExifTool arguments for writing metadata.
 - `--provider-args <args...>`: Additional arguments for the AI provider.
-- `-w, --watch <path>`: Watch directory for new files to process.
 - `--avoid-overwrite`: Avoid overwriting if EXIF tags already exist in the file.
-- `--ext <extensions...>`: File extensions to watch. Only files with this extensions will be processed.
-- `--concurrency <number>`: The numbers of files to process concurrently in watch mode.
-- `--face-group-ids <group...>`: List of face group IDs to use for face recognition.
 - `--repeat`: The number of times to repeat the task if the AI-generated result is deemed unacceptable. This parameter helps ensure the quality of the output by allowing multiple attempts. Default value is 0. An AI-generated description is considered acceptable if it has more than 10 characters and is not in markdown format. AI-generated tags are considered acceptable if there are more than 1 tag and they are not in markdown format. Using this parameter will consume more tokens, which may incur additional costs. Use it at your own risk.
 
 Example usage:
@@ -89,8 +84,6 @@ const options = {
   writeArgs: [], // Additional ExifTool arguments for writing metadata
   providerArgs: [], // Additional arguments for the AI provider
   avoidOverwrite: false, // Avoid overwriting if EXIF tags already exist in the file
-  doNotEndExifTool: false, // Do not end ExifTool process after writing metadata
-  faceGroupIds: [], // List of face group IDs to use for face recognition
   repeat: 0, // The number of times to repeat the task if the AI-generated result is deemed unacceptable
 };
 
@@ -121,36 +114,21 @@ The `description` task generates a description of the image using the AI provide
 
 The `tag` task generates tags for the image using the AI provider. The tags are written to the specified EXIF tags defined in `tagTags`.
 
-### Face Recognition
-
-The `face` task performs face recognition on the image using the [Tencent Cloud API](https://cloud.tencent.com/document/api/867/44994). The face recognition results are written to the specified EXIF tags defined in `tagTags`.
-
-Currently, the `face` task requires user to enable face recognition service on Tencent Cloud and set a pair of Tencent Cloud API Secret ID and Tencent CLoud API Secret Key in the environment variable.
-
-```bash
-export TENCENTCLOUD_SECRET_ID=your_tencentcloud_secret_id
-export TENCENTCLOUD_SECRET_KEY=your_tencentcloud_secret_key
-```
-
 ### Note
 
 Please ensure that you securely manage your API keys. Do not expose them in public repositories or other public forums.
 
-## API Providers
+## AI SDK Integration
 
-Exif AI is designed to leverage various API providers for generating image descriptions and tags. We currently support five prominent providers, each offering unique capabilities and integration options. Below is a summary of the supported providers, including details on their requirements and features.
+Exif AI now uses the AI SDK by Vercel to provide a unified interface for multiple AI providers. This allows for seamless integration with various AI services without the need for provider-specific code.
 
 ### Supported Providers
 
-- ZhipuAI: A cutting-edge AI service provider known for its advanced algorithms. Access to this service requires an API key.
-- Ollama: An innovative local AI service that operates directly on your machine. This option does not require an API key, offering a seamless and private experience.
-- Google Gemini: A robust AI service powered by Google, renowned for its high-quality image processing capabilities.
-- Coze: Coze is a state-of-the-art AI platform designed for everyone, enabling the development of next-generation applications and chatbots.
-- OpenAI: A preeminent AI service provider, recognized for its wide range of AI-powered tools and applications. Like ZhipuAI, it requires an API key for access.
-
-### Custom Providers
-
-For users seeking to extend the functionality of Exif AI or integrate with additional AI services, we offer the flexibility to develop custom providers. By implementing the provider interface, you can create a custom provider to integrate with other AI services or tailor the image description generation process to your specific needs.
+- OpenAI: A leading AI service provider, recognized for its wide range of AI-powered tools and applications.
+- Google Generative AI: A robust AI service powered by Google, renowned for its high-quality image processing capabilities.
+- Anthropic: A provider focused on developing reliable, interpretable, and steerable AI systems.
+- Mistral: A provider offering state-of-the-art language models with strong performance.
+- Ollama: An innovative local AI service that operates directly on your machine, offering a seamless and private experience.
 
 ## Configuration
 
@@ -162,64 +140,46 @@ To use [OpenAI](https://openai.com/), you need to set the API key. You can do th
 export OPENAI_API_KEY=your_openai_api_key
 ```
 
-If you wish to use a custom API service provider that is compatible with the OpenAI API, you can set the `OPEN_API_BASEURL` environment variable to point to the desired endpoint.
+If you wish to use a custom API service provider that is compatible with the OpenAI API, you can set the `OPENAI_BASE_URL` environment variable to point to the desired endpoint.
 
 ```bash
-export OPEN_API_BASEURL=https://api.customprovider.com/v1
+export OPENAI_BASE_URL=https://api.customprovider.com/v1
 ```
 
-### Zhipu AI
+### Google Generative AI
 
-To use [ZhipuAI](https://open.bigmodel.cn/usercenter/apikeys), you need to set the API key. You can do this by setting an environment variable:
-
-```bash
-export ZHIPUAI_API_KEY=your_zhipuai_api_key
-```
-
-If you don't have a ZhipuAI account, you can sign up for one [here](https://www.bigmodel.cn/invite?icode=INWAHJuWBFUp07JYI6oBveZLO2QH3C0EBTSr%2BArzMw4%3D).
-
-### Google Gemini
-
-To use [Google Gemini](https://ai.google.dev/), you need to set the API key. You can do this by setting an environment variable:
+To use [Google Generative AI](https://ai.google.dev/), you need to set the API key. You can do this by setting an environment variable:
 
 ```bash
 export API_KEY=your_google_api_key
+# or
+export GOOGLE_API_KEY=your_google_api_key
 ```
 
-### Coze Bot
+### Anthropic
 
-To use [Coze](https://www.coze.com/) bot, you need to set the API key. You can do this by setting an environment variable:
+To use [Anthropic](https://www.anthropic.com/), you need to set the API key. You can do this by setting an environment variable:
 
 ```bash
-export COZE_API_KEY=your_coze_api_key
+export ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
-When utilizing Coze within the Chinese region, configure the endpoint setting as follows:
+### Mistral
+
+To use [Mistral](https://mistral.ai/), you need to set the API key. You can do this by setting an environment variable:
 
 ```bash
-export COZE_ENDPOINT=https://api.coze.cn
+export MISTRAL_API_KEY=your_mistral_api_key
 ```
-
-In Coze Bot, the `model` parameter corresponds to the bot's identifier. To interact with the Coze API, use the following command format:
-
-```bash
-exif-ai -a coze_bot -i image.jpg -m 7402199305639034921
-```
-
-Here, `-a coze_bot` specifies the Coze API, `-i image.jpg` indicates the input image file, and `-m 7402199305639034921` is the unique identifier for the bot model you wish to use.
 
 ### Ollama
 
 Ollama runs locally and does not require an API key. Ensure that Ollama is installed and properly configured on your machine. Refer to the [Ollama GitHub repository](https://github.com/ollama/ollama) for installation and setup instructions.
 
-To use remote Ollama service, you can defined the url in providerArgs:
+To use a remote Ollama service, you can set the base URL using an environment variable:
 
 ```bash
-exif-ai --providerArgs "http://ollama.example.com:8080" -a ollama -i image.jpg
-```
-
-```js
-providerArgs: ["http://ollama.example.com:8080"],
+export OLLAMA_BASE_URL=http://ollama.example.com:11434
 ```
 
 ## Develop

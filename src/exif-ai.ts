@@ -1,132 +1,161 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import { execute } from "./index.js";
-import { watch } from "chokidar";
 import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
 import { getText } from "./fluent/index.js";
-import pLimit from "p-limit";
+import { DescriptionKey } from "./tasks/description.js";
+import { TagKey } from "./tasks/tags.js";
 
-async function findFilesRecursive(
-  dir: string,
-  ext?: string[],
-): Promise<string[]> {
-  const files: string[] = [];
-  const items = await readdir(dir, { withFileTypes: true });
-  for (const item of items) {
-    const fullPath = join(dir, item.name);
-    if (item.isDirectory()) {
-      const subFiles = await findFilesRecursive(fullPath, ext);
-      files.push(...subFiles);
-    } else if (
-      item.isFile() &&
-      (ext == null || ext.length === 0 || ext.some((e) => fullPath.endsWith(e)))
-    ) {
-      files.push(fullPath);
-    }
-  }
-  return files;
+// Define the type for our arguments
+interface Args {
+  apiProvider: string;
+  tasks?: string[];
+  input?: string;
+  descriptionPrompt?: string;
+  tagPrompt?: string;
+  model?: string;
+  descriptionTags?: string[];
+  tagTags?: string[];
+  verbose?: boolean;
+  dryRun?: boolean;
+  exifToolWriteArgs?: string[];
+  providerArgs?: string[];
+  avoidOverwrite?: boolean;
+  repeat?: number;
 }
-const program = new Command();
-program
+
+// Parse command line arguments
+const argv = yargs(hideBin(process.argv))
   .version("3.2.4")
-  .description(getText("description") ?? "")
-  .requiredOption("-a, --api-provider <provider>", getText("api-provider"))
-  .option("-T, --tasks <tasks...>", getText("tasks"))
-  .option("-i, --input <path>", getText("input"))
-  .option("-p, --description-prompt <prompt>", getText("description-prompt"))
-  .option("--tag-prompt <prompt>", getText("tag-prompt"))
-  .option("-m, --model <model>", getText("model"))
-  .option("-t, --description-tags <tags...>", getText("description-tags"))
-  .option("--tag-tags <tag...>", getText("tag-tags"))
-  .option("-v, --verbose", getText("verbose"))
-  .option("-d, --dry-run", getText("dry-run"))
-  .option("--exif-tool-write-args <args...>", getText("exif-tool-write-args"))
-  .option("--provider-args <args...>", getText("provider-args"))
-  .option("-w, --watch <path>", getText("watch"))
-  .option("--avoid-overwrite", getText("avoid-overwrite"))
-  .option("--ext <extensions...>", getText("ext"))
-  .option("--concurrency <number>", getText("concurrency"))
-  .option("--face-group-ids <groups...>", getText("face-group-ids"))
-  .option("--repeat <number>", getText("repeat"))
-  .parse();
-
-const options = program.opts();
-const watchMode = options.watch;
-
-const limit = pLimit(Number(options.concurrency) || 1);
+  .usage(getText("description") ?? "")
+  .option("a", {
+    alias: "api-provider",
+    describe: getText("api-provider") ?? "Name of the AI provider to use",
+    type: "string",
+    demandOption: true
+  })
+  .option("T", {
+    alias: "tasks",
+    describe: getText("tasks") ?? "List of tasks to perform",
+    type: "array"
+  })
+  .option("i", {
+    alias: "input",
+    describe: getText("input") ?? "Path to the input image file",
+    type: "string"
+  })
+  .option("p", {
+    alias: "description-prompt",
+    describe: getText("description-prompt") ?? "Custom prompt for the AI provider to generate description",
+    type: "string"
+  })
+  .option("tag-prompt", {
+    describe: getText("tag-prompt") ?? "Custom prompt for the AI provider to generate tags",
+    type: "string"
+  })
+  .option("m", {
+    alias: "model",
+    describe: getText("model") ?? "Specify the AI model to use",
+    type: "string"
+  })
+  .option("t", {
+    alias: "description-tags",
+    describe: getText("description-tags") ?? "List of EXIF tags to write the description to",
+    type: "array"
+  })
+  .option("tag-tags", {
+    describe: getText("tag-tags") ?? "List of EXIF tags to write the tags to",
+    type: "array"
+  })
+  .option("v", {
+    alias: "verbose",
+    describe: getText("verbose") ?? "Enable verbose output for debugging",
+    type: "boolean"
+  })
+  .option("d", {
+    alias: "dry-run",
+    describe: getText("dry-run") ?? "Preview AI-generated content without writing to the image file",
+    type: "boolean"
+  })
+  .option("exif-tool-write-args", {
+    describe: getText("exif-tool-write-args") ?? "Additional ExifTool arguments for writing metadata",
+    type: "array"
+  })
+  .option("provider-args", {
+    describe: getText("provider-args") ?? "Additional arguments for the AI provider",
+    type: "array"
+  })
+  .option("avoid-overwrite", {
+    describe: getText("avoid-overwrite") ?? "Avoid overwriting if EXIF tags already exist in the file",
+    type: "boolean"
+  })
+  .option("repeat", {
+    describe: getText("repeat") ?? "Number of times to repeat the task if the AI-generated result is deemed unacceptable",
+    type: "number"
+  })
+  .help()
+  .parseSync() as unknown as Args;
 
 function logVerbose(...message: unknown[]) {
-  if (options.verbose) console.log(...message);
+  if (argv.verbose) console.log(...message);
 }
 
 async function handleExecution(path: string) {
   try {
+    // Default description tags from the index.ts file
+    const defaultDescriptionTags: DescriptionKey[] = [
+      "XPComment",
+      "Description",
+      "ImageDescription",
+      "Caption-Abstract",
+    ];
+
+    // Default tag tags from the index.ts file
+    const defaultTagTags: TagKey[] = ["Subject", "TagsList", "Keywords"];
+
     await execute({
-      tasks: options.tasks,
+      tasks: argv.tasks,
       path,
-      provider: options.apiProvider,
-      model: options.model,
-      descriptionTags: options.descriptionTags,
-      tagTags: options.tagTags,
-      tagPrompt: options.tagPrompt,
-      descriptionPrompt: options.descriptionPrompt,
-      verbose: options.verbose,
-      dry: options.dryRun,
-      writeArgs: options.exifToolWriteArgs,
-      providerArgs: options.providerArgs,
-      avoidOverwrite: options.avoidOverwrite,
-      doNotEndExifTool: Boolean(watchMode),
-      faceGroupIds: options.faceGroupIds,
-      repeat: options.repeat,
+      provider: argv.apiProvider,
+      model: argv.model,
+      descriptionTags: argv.descriptionTags ? 
+        argv.descriptionTags.filter((tag): tag is DescriptionKey => 
+          defaultDescriptionTags.includes(tag as DescriptionKey)
+        ) : 
+        undefined,
+      tagTags: argv.tagTags ? 
+        argv.tagTags.filter((tag): tag is TagKey => 
+          defaultTagTags.includes(tag as TagKey)
+        ) : 
+        undefined,
+      tagPrompt: argv.tagPrompt,
+      descriptionPrompt: argv.descriptionPrompt,
+      verbose: argv.verbose,
+      dry: argv.dryRun,
+      writeArgs: argv.exifToolWriteArgs,
+      providerArgs: argv.providerArgs,
+      avoidOverwrite: argv.avoidOverwrite,
+      repeat: argv.repeat,
     });
   } catch (error) {
     console.error(`Error processing file ${path}:`, error);
   }
 }
 
-if (options.verbose) {
-  logVerbose("Running with options:", options);
+if (argv.verbose) {
+  logVerbose("Running with options:", argv);
 }
 
-if (watchMode) {
-  const pathToWatch = watchMode === true ? "./" : watchMode;
-  logVerbose(`Watching directory: ${pathToWatch}`);
-
-  // Process files in `pathToWatch` recursively
-  const files = await findFilesRecursive(pathToWatch, options.ext);
-
-  // Process all files concurrently
-  await Promise.all(files.map((file) => limit(() => handleExecution(file))));
-
-  watch(pathToWatch, {
-    persistent: true,
-    ignoreInitial: true,
-    ignored: (path) => {
-      return (
-        !options.ext?.length ||
-        !options.ext.some((ext: string) => path.endsWith(ext))
-      );
-    },
-    awaitWriteFinish: {
-      stabilityThreshold: 2000, // Wait for 2 seconds after a file is modified
-    },
-  }).on("add", (path) => {
-    logVerbose(`New file detected: ${path}`);
-    handleExecution(path);
-  });
-} else {
-  if (!options.input) {
-    console.error(
-      "No input file specified. Please provide an input file using the -i option.",
-    );
-    process.exit(1);
-  }
-  if (!existsSync(options.input)) {
-    console.error(`Input file does not exist: ${options.input}`);
-    process.exit(1);
-  }
-  handleExecution(options.input);
+if (!argv.input) {
+  console.error(
+    "No input file specified. Please provide an input file using the -i option.",
+  );
+  process.exit(1);
 }
+if (!existsSync(argv.input)) {
+  console.error(`Input file does not exist: ${argv.input}`);
+  process.exit(1);
+}
+handleExecution(argv.input);

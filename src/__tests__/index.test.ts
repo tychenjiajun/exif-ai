@@ -7,7 +7,7 @@ import {
   vi,
   afterAll,
 } from "vitest";
-import { execute } from "../src/index.js";
+import { execute } from "../index.js";
 import { exiftool } from "exiftool-vendored";
 import { resolve } from "node:path";
 import { existsSync, promises as fsPromises } from "node:fs";
@@ -20,7 +20,7 @@ const getTags = vi.fn(async ({ prompt }: { prompt: string }) => prompt); // Retu
 
 describe("Image Processing Tests", () => {
   const baseOptions = {
-    path: "./test/image0.jpeg",
+    path: "./src/__tests__/image0.jpeg",
     provider: "provider1",
     model: "model1",
     descriptionTags: [
@@ -40,11 +40,11 @@ describe("Image Processing Tests", () => {
 
   beforeEach(async () => {
     i++;
-    baseOptions.path = `./test/image${i}.jpeg`;
+    baseOptions.path = `./src/__tests__/image${i}.jpeg`;
     const resolvedPath = resolve(baseOptions.path);
 
     await fsPromises.copyFile(
-      "./test/image/VCG211476897295.jpeg",
+      "./src/__tests__/image/VCG211476897295.jpeg",
       resolvedPath,
     );
     // Mock the provider module
@@ -204,7 +204,7 @@ describe("Image Processing Tests", () => {
   afterEach(async () => {
     const resolvedPath = resolve(baseOptions.path);
 
-    await deleteAsync(["./test/*original"]);
+    await deleteAsync(["./src/__tests__/*original"]);
     await fsPromises.unlink(resolvedPath);
   });
 

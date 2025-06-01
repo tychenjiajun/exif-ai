@@ -17,6 +17,7 @@ export async function getDescription({
   path,
   file_id,
   repeat,
+  provider,
 }: {
   buffer: Buffer;
   model?: string;
@@ -29,6 +30,7 @@ export async function getDescription({
   path: string;
   file_id?: string;
   repeat?: number;
+  provider?: string;
 }) {
   // Get description from provider
   let description: string | undefined;
@@ -43,6 +45,7 @@ export async function getDescription({
           providerArgs,
           path,
           file_id,
+          provider, // Pass the provider name to the AI SDK
         });
       } catch (error) {
         if (verbose)

@@ -27,7 +27,7 @@ const baseOptions = {
   path,
 };
 
-import { getTags } from "../../src/tasks/tags.js";
+import { getTags } from "../tags.js";
 
 describe("Tag Tests", () => {
   it("should run correctly", async () => {
