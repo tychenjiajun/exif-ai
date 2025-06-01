@@ -1,16 +1,4 @@
 {
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "target": "es2021",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "declaration": true,
-  },
-  "include": [
-    "src",
-  ],
+  "extends": "./tsconfig.json",
+  "exclude": ["dist", "**/__tests__/**"]
 }

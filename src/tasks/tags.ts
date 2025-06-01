@@ -66,6 +66,7 @@ export async function getTags({
   path,
   file_id,
   repeat,
+  provider,
 }: {
   buffer: Buffer;
   model?: string;
@@ -79,6 +80,7 @@ export async function getTags({
   path: string;
   file_id?: string;
   repeat?: number;
+  provider?: string;
 }) {
   // Get tags from provider
   let tags: string[] = [];
@@ -94,6 +96,7 @@ export async function getTags({
             providerArgs,
             path,
             file_id,
+            provider, // Pass the provider name to the AI SDK
           }),
         );
       } catch (error) {

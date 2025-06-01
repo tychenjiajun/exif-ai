@@ -16,7 +16,6 @@ import fetch, {
 import { DescriptionKey, getDescription } from "./tasks/description.js";
 import { getTags, TagKey } from "./tasks/tags.js";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { getFaces } from "./tasks/face.js";
 import { getText } from "./fluent/index.js";
 
 if (
@@ -74,12 +73,10 @@ export async function execute({
   writeArgs,
   providerArgs,
   avoidOverwrite = false,
-  doNotEndExifTool = false,
-  faceGroupIds = [],
   repeat = 0,
 }: {
   /**
-   * Array of tasks to perform: 'description', 'tag', 'face'
+   * Array of tasks to perform: 'description', 'tag'
    */
   tasks?: string[];
   /**
@@ -130,20 +127,13 @@ export async function execute({
    * Avoid overwriting existing tags
    */
   avoidOverwrite?: boolean;
-  /**
-   * Do not end the ExifTool session after execution
-   */
-  doNotEndExifTool?: boolean;
-  /**
-   * Array of face group IDs to use for face recognition
-   */
-  faceGroupIds?: string[];
+
   /**
    * Number of times to repeat the task if it does not return acceptable results
    */
   repeat?: number;
 }) {
-  if (["description", "tag", "tags", "face"].every((t) => !tasks.includes(t)))
+  if (["description", "tag", "tags"].every((t) => !tasks.includes(t)))
     return;
 
   const resolvedPath = resolve(path);
@@ -159,43 +149,22 @@ export async function execute({
       ? await exiftool.read(resolvedPath)
       : undefined;
 
-    // Import provider module
+    // Import AI SDK provider module
     let providerModule;
     try {
-      providerModule = await import(`./provider/${provider}.js`);
+      providerModule = await import(`./provider/ai-sdk.js`);
+      if (verbose) console.log("Using AI SDK with provider:", provider);
     } catch (error) {
-      try {
-        providerModule = await import(`${provider}`);
-      } catch (error) {
-        console.error("Failed to import provider module", error);
-        return;
-      }
-    }
-    if (providerModule == null) {
-      console.error("Import provider failed. Provider name:", provider);
+      console.error("Failed to import AI SDK provider module", error);
       return;
     }
-    if (verbose) console.log("Imported provider:", provider);
-
-    const faces = tasks.includes("face")
-      ? await getFaces({
-          buffer,
-          verbose,
-          faceGroupIds,
-        })
-      : undefined;
-
-    let file_id: string | undefined;
-
-    if ("uploadFile" in providerModule) {
-      if (verbose) console.log("Uploading file to provider");
-      const { id } = await providerModule.uploadFile({
-        path,
-        buffer,
-      });
-
-      file_id = id;
+    if (providerModule == null) {
+      console.error("Import AI SDK provider failed");
+      return;
     }
+
+    // AI SDK doesn't use file_id
+    let file_id: string | undefined;
 
     if (verbose) {
       // log tasks' prompt
@@ -217,6 +186,7 @@ export async function execute({
             path: resolvedPath,
             file_id,
             repeat,
+            provider, // Pass the provider name
           })
         : undefined,
       tasks.includes("tag") || tasks.includes("tags")
@@ -228,25 +198,13 @@ export async function execute({
             providerModule,
             tagTags,
             existingTags,
-            additionalTags: faces,
+            additionalTags: undefined,
             path: resolvedPath,
             file_id,
             repeat,
+            provider, // Pass the provider name
           })
-        : tasks.includes("face")
-          ? getTags({
-              buffer,
-              model,
-              prompt: tagPrompt,
-              providerArgs,
-              tagTags,
-              existingTags,
-              additionalTags: faces,
-              path: resolvedPath,
-              file_id,
-              repeat,
-            })
-          : undefined,
+        : undefined,
     ] as const);
 
     const result = {
@@ -268,7 +226,6 @@ export async function execute({
   } catch (error) {
     console.error("An error occurred:", error);
   } finally {
-    if (doNotEndExifTool) return;
     // Ensure ExifTool session is closed properly
     await exiftool.end();
   }
