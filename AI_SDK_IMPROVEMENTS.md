@@ -23,6 +23,14 @@ The following AI providers are now supported through their official AI SDK packa
 | Anthropic | `@ai-sdk/anthropic` | Claude 3.5 Sonnet, Claude 3 Opus | `ANTHROPIC_API_KEY` |
 | Mistral | `@ai-sdk/mistral` | Mistral Large, Mistral Medium | `MISTRAL_API_KEY` |
 | Ollama | `@ai-sdk/openai` (compatible) | Llama 3.2 Vision, etc. | `OLLAMA_BASE_URL` |
+| Amazon Bedrock | `@ai-sdk/amazon-bedrock` | Claude 3 Sonnet, etc. | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
+| Azure OpenAI | `@ai-sdk/azure` | GPT-4 Vision, etc. | `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT` |
+| DeepInfra | `@ai-sdk/deepinfra` | CogVLM2, etc. | `DEEPINFRA_API_KEY` |
+| Fireworks | `@ai-sdk/fireworks` | Llama 3, etc. | `FIREWORKS_API_KEY` |
+| OpenAI Compatible | `@ai-sdk/openai-compatible` | Various models | `OPENAI_COMPATIBLE_API_KEY`, `OPENAI_COMPATIBLE_BASE_URL` |
+| TogetherAI | `@ai-sdk/togetherai` | CogVLM2, etc. | `TOGETHER_API_KEY` |
+| XAI | `@ai-sdk/xai` | Grok 1.5 Vision | `XAI_API_KEY` |
+| OpenRouter | `@openrouter/ai-sdk-provider` | Various models | `OPENROUTER_API_KEY` |
 
 ### 3. **Improved Multimodal Support**
 - **Native Buffer Support**: AI SDK can handle image buffers directly without base64 conversion
@@ -46,10 +54,18 @@ The following AI providers are now supported through their official AI SDK packa
 2. **Package Dependencies** - Added official AI SDK packages
    ```json
    {
-     "@ai-sdk/openai": "^1.2.x",
-     "@ai-sdk/google": "^1.2.x", 
+     "@ai-sdk/amazon-bedrock": "^2.2.x",
      "@ai-sdk/anthropic": "^1.2.x",
-     "@ai-sdk/mistral": "^1.2.x"
+     "@ai-sdk/azure": "^1.3.x",
+     "@ai-sdk/deepinfra": "^0.2.x",
+     "@ai-sdk/fireworks": "^0.2.x",
+     "@ai-sdk/google": "^1.2.x", 
+     "@ai-sdk/mistral": "^1.2.x",
+     "@ai-sdk/openai": "^1.3.x",
+     "@ai-sdk/openai-compatible": "^0.2.x",
+     "@ai-sdk/togetherai": "^0.2.x",
+     "@ai-sdk/xai": "^1.2.x",
+     "@openrouter/ai-sdk-provider": "^0.7.x"
    }
    ```
 
@@ -94,6 +110,30 @@ ANTHROPIC_API_KEY=your_key exif-ai -i image.jpg -a anthropic -m claude-3-5-sonne
 
 # Using local Ollama
 exif-ai -i image.jpg -a ollama -m llama3.2-vision
+
+# Using Amazon Bedrock
+AWS_ACCESS_KEY_ID=your_key AWS_SECRET_ACCESS_KEY=your_secret exif-ai -i image.jpg -a amazon -m anthropic.claude-3-sonnet-20240229-v1:0
+
+# Using Azure OpenAI
+AZURE_OPENAI_API_KEY=your_key AZURE_OPENAI_ENDPOINT=your_endpoint exif-ai -i image.jpg -a azure -m gpt-4-vision
+
+# Using DeepInfra
+DEEPINFRA_API_KEY=your_key exif-ai -i image.jpg -a deepinfra -m cogvlm2-llama3-8b-chat
+
+# Using Fireworks
+FIREWORKS_API_KEY=your_key exif-ai -i image.jpg -a fireworks -m accounts/fireworks/models/llama-v3-8b-instruct
+
+# Using OpenAI Compatible
+OPENAI_COMPATIBLE_API_KEY=your_key OPENAI_COMPATIBLE_BASE_URL=your_url exif-ai -i image.jpg -a openai-compatible -m gpt-4-vision
+
+# Using TogetherAI
+TOGETHER_API_KEY=your_key exif-ai -i image.jpg -a together -m cogvlm2-llama3-8b-chat
+
+# Using XAI
+XAI_API_KEY=your_key exif-ai -i image.jpg -a xai -m grok-1.5-vision
+
+# Using OpenRouter
+OPENROUTER_API_KEY=your_key exif-ai -i image.jpg -a openrouter -m openai/gpt-4o
 ```
 
 ### Programmatic Usage
@@ -171,7 +211,7 @@ The AI SDK integration provides a foundation for future improvements:
    ```
    Error: Unsupported provider: 'custom'
    ```
-   **Solution**: Use one of the supported providers: openai, google, anthropic, mistral, ollama
+   **Solution**: Use one of the supported providers: openai, google, anthropic, mistral, ollama, amazon, bedrock, azure, deepinfra, fireworks, openai-compatible, together, togetherai, xai, openrouter
 
 ### Debug Mode
 Enable verbose logging to see detailed AI SDK operations:
