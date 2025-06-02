@@ -28,7 +28,7 @@ export default [
     ],
   },
 
-  // Base configs
+  // Base configs for all files
   pluginJs.configs.recommended,
   prettierRecommended,
   eslintPluginUnicorn.configs.recommended,
@@ -37,15 +37,22 @@ export default [
   pluginPromise.configs['flat/recommended'],
   sonarjs.configs.recommended,
 
-  // TypeScript configs
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  // TypeScript configs with type checking - only for src directory
+  ...tseslint.configs.strictTypeChecked.map(config => ({
+    ...config,
+    files: ['src/**/*.{ts,tsx}'],
+  })),
+  ...tseslint.configs.stylisticTypeChecked.map(config => ({
+    ...config,
+    files: ['src/**/*.{ts,tsx}'],
+  })),
 
-  // TypeScript files
+  // TypeScript files configuration (only for src directory)
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     rules: {
       'unicorn/no-nested-ternary': 'off',
+      'unicorn/no-nested-conditional': 'off',
       'unicorn/no-null': 'off',
       'unicorn/prefer-spread': 'off',
       'unicorn/prefer-global-this': 'off',
@@ -95,9 +102,9 @@ export default [
       },
     },
   },
-  // Test files configuration
+  // Test files configuration (only in src directory)
   {
-    files: ['**/*.{test,spec}.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}'],
+    files: ['src/**/*.{test,spec}.{ts,tsx}', 'src/**/__tests__/**/*.{ts,tsx}'],
     rules: {
       // Allow test-specific patterns
       '@typescript-eslint/no-explicit-any': 'off',

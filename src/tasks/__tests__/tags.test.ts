@@ -4,7 +4,7 @@ const buffer = Buffer.from("test");
 const model = "testModel";
 const prompt = "testPrompt";
 const providerModule = {
-  getTags: async () => ["tag1", "tag2"],
+  getTags: () => Promise.resolve(["tag1", "tag2"]),
 };
 const providerArgs = ["testProviderArgs"];
 const verbose = true;
@@ -41,7 +41,7 @@ describe("Tag Tests", () => {
 
   it("should return empty object if tags are undefined", async () => {
     const providerModule = {
-      getTags: async () => undefined,
+      getTags: () => Promise.resolve(undefined),
     };
 
     const result = await getTags({
@@ -79,7 +79,7 @@ describe("Tag Tests", () => {
 
   it("should handle providerModule.getTags returning an empty array", async () => {
     const providerModule = {
-      getTags: async () => [],
+      getTags: () => Promise.resolve([]),
     };
 
     const result = await getTags({
@@ -118,9 +118,7 @@ describe("Tag Tests", () => {
 
   it("should handle providerModule.getTags throwing an error", async () => {
     const providerModule = {
-      getTags: async () => {
-        throw new Error("Error in getTags");
-      },
+      getTags: () => Promise.reject(new Error("Error in getTags")),
     };
 
     const result = await getTags({
@@ -320,7 +318,7 @@ Given these elements, here are some possible tags based on subject, object, even
     { a: '["a","b"]', expected: ["a", "b"] },
   ])("should format ($a) -> $expected", async ({ a, expected }) => {
     const providerModule = {
-      getTags: async () => a,
+      getTags: () => Promise.resolve(a),
     };
 
     const result = await getTags({
