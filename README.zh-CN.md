@@ -32,7 +32,7 @@ exif-ai -i example.jpeg -a ollama
 
 必选项:
 
-- `-a, --api-provider <value>`: 选择要使用的AI供应商，请指定以下名称之一（`ollama`对应Ollama，`zhipu`对应ZhipuAI，`google`对应Google Gemini，`coze_bot`对应扣子bot，`openai`对应OpenAI）
+- `-a, --api-provider <value>`: 选择要使用的AI供应商，请指定以下名称之一（`openai`对应OpenAI，`google`对应Google Gemini，`anthropic`对应Anthropic，`mistral`对应Mistral，`ollama`对应Ollama，`amazon`或`bedrock`对应Amazon Bedrock，`azure`对应Azure OpenAI，`deepinfra`对应DeepInfra，`fireworks`对应Fireworks，`openai-compatible`对应OpenAI兼容服务，`together`或`togetherai`对应TogetherAI，`xai`对应XAI，`openrouter`对应OpenRouter）
 
 可选项:
 
@@ -136,11 +136,19 @@ Exif AI旨在利用各种API供应商来生成图像描述和标签。我们目�
 
 ### 支持的供应商
 
-- ZhipuAI：一家以先进算法著称的尖端AI服务供应商。访问此服务需要API密钥。
-- Ollama：一种创新的本地AI服务，直接在您的机器上运行。此选项不需要API密钥，提供无缝且私密的体验。
+- OpenAI：一家领先的AI服务供应商，以其广泛的AI工具和应用而闻名。
 - Google Gemini：由Google提供支持的强大AI服务，以其高质量的图像处理能力而闻名。
-- Coze: 扣子是新一代AI大模型智能体开发平台。您可以使用API来调用扣子的bot或工作流。
-- OpenAI：一家领先的AI服务供应商，以其广泛的AI工具和应用而闻名。与ZhipuAI一样，它需要API密钥才能访问。
+- Anthropic：一家专注于开发可靠、可解释和可控制的AI系统的供应商。
+- Mistral：一家提供高性能语言模型的供应商。
+- Ollama：一种创新的本地AI服务，直接在您的机器上运行。此选项不需要API密钥，提供无缝且私密的体验。
+- Amazon Bedrock：亚马逊的完全托管服务，提供多种高性能基础模型的选择。
+- Azure OpenAI：微软的基于云的服务，提供带有Azure安全功能的OpenAI模型访问。
+- DeepInfra：一个提供各种开源和专有AI模型访问的平台。
+- Fireworks：一家专注于高效和经济的AI模型推理的供应商。
+- OpenAI Compatible：一个适用于实现OpenAI API规范的服务的通用接口。
+- TogetherAI：一个提供广泛开源模型访问的平台。
+- XAI：Grok模型系列的提供商，具有视觉能力。
+- OpenRouter：一个统一的API网关，提供对来自不同供应商的各种AI模型的访问。
 
 ### 自定义供应商
 
@@ -204,18 +212,81 @@ exif-ai -a coze_bot -i image.jpg -m 7402199305639034921
 
 ### Ollama
 
-Ollama 在本地运行，因此不需要 API 密钥。请确保已正确安装和配置 Ollama。更多安装和设置信息，请参阅[Ollama](https://github.com/ollama/ollama)的官方文档。。
+Ollama 在本地运行，因此不需要 API 密钥。请确保已正确安装和配置 Ollama。更多安装和设置信息，请参阅[Ollama](https://github.com/ollama/ollama)的官方文档。
 
-若要使用远程 Ollama 服务，您可以在`providerArgs`中指定服务 URL：
+若要使用远程 Ollama 服务，您可以设置以下环境变量：
 
 ```bash
-exif-ai --providerArgs "http://ollama.example.com:8080" -a ollama -i image.jpg
+export OLLAMA_BASE_URL=http://ollama.example.com:11434
 ```
 
-在使用库集成时，`providerArgs`可以这样设置：
+### Amazon Bedrock
 
-```js
-providerArgs: ["http://ollama.example.com:8080"],
+要使用 [Amazon Bedrock](https://aws.amazon.com/bedrock/)，您需要设置 AWS 凭证：
+
+```bash
+export AWS_ACCESS_KEY_ID=your_aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+export AWS_REGION=us-east-1  # 或您首选的区域
+```
+
+### Azure OpenAI
+
+要使用 [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service/)，您需要设置以下环境变量：
+
+```bash
+export AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+export AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com
+export AZURE_OPENAI_API_VERSION=2023-12-01-preview  # 或您首选的 API 版本
+```
+
+### DeepInfra
+
+要使用 [DeepInfra](https://deepinfra.com/)，您需要设置 API 密钥：
+
+```bash
+export DEEPINFRA_API_KEY=your_deepinfra_api_key
+```
+
+### Fireworks
+
+要使用 [Fireworks](https://fireworks.ai/)，您需要设置 API 密钥：
+
+```bash
+export FIREWORKS_API_KEY=your_fireworks_api_key
+```
+
+### OpenAI Compatible
+
+要使用 OpenAI 兼容的 API 服务，您需要设置以下环境变量：
+
+```bash
+export OPENAI_COMPATIBLE_API_KEY=your_api_key
+export OPENAI_COMPATIBLE_BASE_URL=https://api.compatible-service.com/v1
+```
+
+### TogetherAI
+
+要使用 [TogetherAI](https://www.together.ai/)，您需要设置 API 密钥：
+
+```bash
+export TOGETHER_API_KEY=your_together_api_key
+```
+
+### XAI
+
+要使用 [XAI](https://x.ai/)，您需要设置 API 密钥：
+
+```bash
+export XAI_API_KEY=your_xai_api_key
+```
+
+### OpenRouter
+
+要使用 [OpenRouter](https://openrouter.ai/)，您需要设置 API 密钥：
+
+```bash
+export OPENROUTER_API_KEY=your_openrouter_api_key
 ```
 
 ## 开发

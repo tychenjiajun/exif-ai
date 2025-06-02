@@ -28,7 +28,7 @@ interface Arguments {
 
 // Parse command line arguments
 const argv = yargs(hideBin(process.argv))
-  .version("3.2.4")
+  .version("4.0.0")
   .usage(getText("description") ?? "")
   .option("a", {
     alias: "api-provider",

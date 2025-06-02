@@ -38,6 +38,14 @@ The face recognition feature using Tencent Cloud API has been removed to reduce 
 - Anthropic
 - Mistral
 - Ollama
+- Amazon Bedrock
+- Azure OpenAI
+- DeepInfra
+- Fireworks
+- OpenAI Compatible
+- TogetherAI
+- XAI
+- OpenRouter
 
 ## Environment Variables
 
@@ -67,6 +75,51 @@ export MISTRAL_API_KEY=your_mistral_api_key
 ### Ollama
 ```bash
 export OLLAMA_BASE_URL=http://ollama.example.com:11434  # Optional, defaults to http://localhost:11434
+```
+
+### Amazon Bedrock
+```bash
+export AWS_ACCESS_KEY_ID=your_aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+export AWS_REGION=us-east-1  # Optional, defaults to us-east-1
+```
+
+### Azure OpenAI
+```bash
+export AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+export AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com
+export AZURE_OPENAI_API_VERSION=2023-12-01-preview  # Optional
+```
+
+### DeepInfra
+```bash
+export DEEPINFRA_API_KEY=your_deepinfra_api_key
+```
+
+### Fireworks
+```bash
+export FIREWORKS_API_KEY=your_fireworks_api_key
+```
+
+### OpenAI Compatible
+```bash
+export OPENAI_COMPATIBLE_API_KEY=your_api_key
+export OPENAI_COMPATIBLE_BASE_URL=https://api.compatible-service.com/v1
+```
+
+### TogetherAI
+```bash
+export TOGETHER_API_KEY=your_together_api_key
+```
+
+### XAI
+```bash
+export XAI_API_KEY=your_xai_api_key
+```
+
+### OpenRouter
+```bash
+export OPENROUTER_API_KEY=your_openrouter_api_key
 ```
 
 ## Command Line Usage

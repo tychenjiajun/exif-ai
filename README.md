@@ -35,7 +35,7 @@ exif-ai -i example.jpeg -a ollama
 
 Required options:
 
-- `-a, --api-provider <value>`: Name of the AI provider to use (`openai`, `google`, `anthropic`, `mistral`, `ollama`).
+- `-a, --api-provider <value>`: Name of the AI provider to use (`openai`, `google`, `anthropic`, `mistral`, `ollama`, `amazon`, `bedrock`, `azure`, `deepinfra`, `fireworks`, `openai-compatible`, `together`, `togetherai`, `xai`, `openrouter`).
 
 Optional options:
 
@@ -129,6 +129,14 @@ Exif AI now uses the AI SDK by Vercel to provide a unified interface for multipl
 - Anthropic: A provider focused on developing reliable, interpretable, and steerable AI systems.
 - Mistral: A provider offering state-of-the-art language models with strong performance.
 - Ollama: An innovative local AI service that operates directly on your machine, offering a seamless and private experience.
+- Amazon Bedrock: Amazon's fully managed service that offers a choice of high-performing foundation models.
+- Azure OpenAI: Microsoft's cloud-based service that provides access to OpenAI models with Azure security features.
+- DeepInfra: A platform offering access to various open-source and proprietary AI models.
+- Fireworks: A provider specializing in efficient and cost-effective AI model inference.
+- OpenAI Compatible: A generic interface for services that implement the OpenAI API specification.
+- TogetherAI: A platform that provides access to a wide range of open-source models.
+- XAI: Provider of the Grok model family with vision capabilities.
+- OpenRouter: A unified API gateway that provides access to various AI models from different providers.
 
 ## Configuration
 
@@ -180,6 +188,75 @@ To use a remote Ollama service, you can set the base URL using an environment va
 
 ```bash
 export OLLAMA_BASE_URL=http://ollama.example.com:11434
+```
+
+### Amazon Bedrock
+
+To use [Amazon Bedrock](https://aws.amazon.com/bedrock/), you need to set your AWS credentials:
+
+```bash
+export AWS_ACCESS_KEY_ID=your_aws_access_key_id
+export AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+export AWS_REGION=us-east-1  # or your preferred region
+```
+
+### Azure OpenAI
+
+To use [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service/), you need to set the following environment variables:
+
+```bash
+export AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+export AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com
+export AZURE_OPENAI_API_VERSION=2023-12-01-preview  # or your preferred API version
+```
+
+### DeepInfra
+
+To use [DeepInfra](https://deepinfra.com/), you need to set the API key:
+
+```bash
+export DEEPINFRA_API_KEY=your_deepinfra_api_key
+```
+
+### Fireworks
+
+To use [Fireworks](https://fireworks.ai/), you need to set the API key:
+
+```bash
+export FIREWORKS_API_KEY=your_fireworks_api_key
+```
+
+### OpenAI Compatible
+
+To use an OpenAI-compatible API service, you need to set the following environment variables:
+
+```bash
+export OPENAI_COMPATIBLE_API_KEY=your_api_key
+export OPENAI_COMPATIBLE_BASE_URL=https://api.compatible-service.com/v1
+```
+
+### TogetherAI
+
+To use [TogetherAI](https://www.together.ai/), you need to set the API key:
+
+```bash
+export TOGETHER_API_KEY=your_together_api_key
+```
+
+### XAI
+
+To use [XAI](https://x.ai/), you need to set the API key:
+
+```bash
+export XAI_API_KEY=your_xai_api_key
+```
+
+### OpenRouter
+
+To use [OpenRouter](https://openrouter.ai/), you need to set the API key:
+
+```bash
+export OPENROUTER_API_KEY=your_openrouter_api_key
 ```
 
 ## Develop
