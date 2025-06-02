@@ -4,112 +4,139 @@ import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { execute } from "./index.js";
 import { existsSync } from "node:fs";
-import { getText } from "./fluent/index.js";
 import { DescriptionKey } from "./tasks/description.js";
 import { TagKey } from "./tasks/tags.js";
 
 // Define the type for our arguments
 interface Arguments {
-  apiProvider: string;
-  tasks?: string[];
-  input?: string;
+  image: string;
+  provider: string;
+  model?: string;
+  tasks: string[];
   descriptionPrompt?: string;
   tagPrompt?: string;
-  model?: string;
   descriptionTags?: string[];
   tagTags?: string[];
-  verbose?: boolean;
   dryRun?: boolean;
-  exifToolWriteArgs?: string[];
+  verbose?: boolean;
+  skipExisting?: boolean;
+  retry?: number;
+  exifArgs?: string[];
   providerArgs?: string[];
-  avoidOverwrite?: boolean;
-  repeat?: number;
 }
 
 // Parse command line arguments
 const argv = yargs(hideBin(process.argv))
   .version("4.0.0")
-  .usage(getText("description") ?? "")
-  .option("a", {
-    alias: "api-provider",
-    describe: getText("api-provider") ?? "Name of the AI provider to use",
+  .usage("$0 <image> [options]")
+  .command(
+    "$0 <image>",
+    "Generate AI descriptions and tags for an image",
+    (yargs) => {
+      return yargs.positional("image", {
+        describe: "Path to the input image file",
+        type: "string",
+        demandOption: true,
+      });
+    },
+  )
+  .option("provider", {
+    alias: ["p", "ai"],
+    describe: "AI provider to use",
     type: "string",
+    choices: [
+      "openai",
+      "google",
+      "anthropic",
+      "mistral",
+      "ollama",
+      "amazon",
+      "bedrock",
+      "azure",
+      "deepinfra",
+      "fireworks",
+      "openai-compatible",
+      "together",
+      "togetherai",
+      "xai",
+      "openrouter",
+    ],
     demandOption: true,
   })
-  .option("T", {
-    alias: "tasks",
-    describe: getText("tasks") ?? "List of tasks to perform",
-    type: "array",
-  })
-  .option("i", {
-    alias: "input",
-    describe: getText("input") ?? "Path to the input image file",
+  .option("model", {
+    alias: "m",
+    describe: "AI model to use (uses provider default if not specified)",
     type: "string",
   })
-  .option("p", {
-    alias: "description-prompt",
-    describe:
-      getText("description-prompt") ??
-      "Custom prompt for the AI provider to generate description",
+  .option("tasks", {
+    alias: "t",
+    describe: "Tasks to perform",
+    type: "array",
+    choices: ["description", "tag", "tags"],
+    default: ["description", "tag"],
+  })
+  .group(["provider", "model"], "AI Configuration:")
+  .option("description-prompt", {
+    describe: "Custom prompt for generating descriptions",
     type: "string",
   })
   .option("tag-prompt", {
-    describe:
-      getText("tag-prompt") ??
-      "Custom prompt for the AI provider to generate tags",
+    describe: "Custom prompt for generating tags",
     type: "string",
   })
-  .option("m", {
-    alias: "model",
-    describe: getText("model") ?? "Specify the AI model to use",
-    type: "string",
-  })
-  .option("t", {
-    alias: "description-tags",
+  .group(["description-prompt", "tag-prompt"], "Prompts:")
+  .option("description-tags", {
     describe:
-      getText("description-tags") ??
-      "List of EXIF tags to write the description to",
+      "EXIF tags for descriptions (default: XPComment, Description, ImageDescription, Caption-Abstract)",
     type: "array",
   })
   .option("tag-tags", {
-    describe: getText("tag-tags") ?? "List of EXIF tags to write the tags to",
+    describe: "EXIF tags for tags (default: Subject, TagsList, Keywords)",
     type: "array",
   })
-  .option("v", {
-    alias: "verbose",
-    describe: getText("verbose") ?? "Enable verbose output for debugging",
+  .group(["description-tags", "tag-tags"], "EXIF Tags:")
+  .option("dry-run", {
+    alias: ["d", "preview"],
+    describe: "Preview AI-generated content without writing to file",
     type: "boolean",
   })
-  .option("d", {
-    alias: "dry-run",
-    describe:
-      getText("dry-run") ??
-      "Preview AI-generated content without writing to the image file",
+  .option("verbose", {
+    alias: "v",
+    describe: "Enable verbose output for debugging",
     type: "boolean",
   })
-  .option("exif-tool-write-args", {
-    describe:
-      getText("exif-tool-write-args") ??
-      "Additional ExifTool arguments for writing metadata",
+  .option("skip-existing", {
+    alias: "skip",
+    describe: "Skip processing if EXIF tags already exist",
+    type: "boolean",
+  })
+  .option("retry", {
+    alias: "r",
+    describe: "Number of retry attempts for better results",
+    type: "number",
+    default: 0,
+  })
+  .group(["dry-run", "verbose", "skip-existing", "retry"], "Output & Behavior:")
+  .option("exif-args", {
+    describe: "Additional ExifTool arguments",
     type: "array",
+    hidden: true,
   })
   .option("provider-args", {
-    describe:
-      getText("provider-args") ?? "Additional arguments for the AI provider",
+    describe: "Additional AI provider arguments",
     type: "array",
+    hidden: true,
   })
-  .option("avoid-overwrite", {
-    describe:
-      getText("avoid-overwrite") ??
-      "Avoid overwriting if EXIF tags already exist in the file",
-    type: "boolean",
-  })
-  .option("repeat", {
-    describe:
-      getText("repeat") ??
-      "Number of times to repeat the task if the AI-generated result is deemed unacceptable",
-    type: "number",
-  })
+  .example("$0 image.jpg --provider ollama", "Basic usage with Ollama")
+  .example("$0 image.jpg -p openai -m gpt-4o", "Use OpenAI with specific model")
+  .example(
+    "$0 image.jpg -p google --tasks description",
+    "Generate only descriptions",
+  )
+  .example("$0 image.jpg -p anthropic --dry-run", "Preview without writing")
+  .epilog(
+    "Environment variables: Set API keys like OPENAI_API_KEY, GOOGLE_API_KEY, etc.",
+  )
   .help()
   .parseSync() as unknown as Arguments;
 
@@ -133,7 +160,7 @@ async function handleExecution(path: string) {
     await execute({
       tasks: argv.tasks,
       path,
-      provider: argv.apiProvider,
+      provider: argv.provider,
       model: argv.model,
       descriptionTags: argv.descriptionTags
         ? argv.descriptionTags.filter((tag): tag is DescriptionKey =>
@@ -149,10 +176,10 @@ async function handleExecution(path: string) {
       descriptionPrompt: argv.descriptionPrompt,
       verbose: argv.verbose,
       dry: argv.dryRun,
-      writeArgs: argv.exifToolWriteArgs,
+      writeArgs: argv.exifArgs,
       providerArgs: argv.providerArgs,
-      avoidOverwrite: argv.avoidOverwrite,
-      repeat: argv.repeat,
+      avoidOverwrite: argv.skipExisting,
+      repeat: argv.retry,
     });
   } catch (error) {
     console.error(`Error processing file ${path}:`, error);
@@ -163,14 +190,12 @@ if (argv.verbose) {
   logVerbose("Running with options:", argv);
 }
 
-if (!argv.input) {
-  console.error(
-    "No input file specified. Please provide an input file using the -i option.",
-  );
+if (!argv.image) {
+  console.error("No input image specified. Please provide an image file path.");
   process.exit(1);
 }
-if (!existsSync(argv.input)) {
-  console.error(`Input file does not exist: ${argv.input}`);
+if (!existsSync(argv.image)) {
+  console.error(`Image file does not exist: ${argv.image}`);
   process.exit(1);
 }
-await handleExecution(argv.input);
+await handleExecution(argv.image);

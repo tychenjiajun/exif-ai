@@ -8,8 +8,8 @@ const bundles: Record<string, FluentBundle> = {
 
 bundles["en-US"].addResource(
   new FluentResource(`
-description = A Node.js CLI that uses Ollama, ZhipuAI, Google Gemini, Coze or OpenAI to intelligently write image description and/or tags to exif metadata by it's content.
-api-provider = Name of the AI provider to use ('ollama' for Ollama, 'zhipu' for ZhipuAI, 'google' for Google Gemini, 'coze_bot' for Coze Bot, 'openai' for OpenAI).
+description = A powerful Node.js CLI and library that uses AI providers (OpenAI, Google Gemini, Anthropic Claude, Mistral, Ollama, Amazon Bedrock, Azure OpenAI, and more) to intelligently write image descriptions and tags to EXIF metadata.
+api-provider = Name of the AI provider to use (openai, google, anthropic, mistral, ollama, amazon, bedrock, azure, deepinfra, fireworks, openai-compatible, together, togetherai, xai, openrouter).
 input = Path to the input image file.
 model = Specify the AI model to use, if supported by the provider.
 description-tags = List of EXIF tags to write the description to. Defaults to common description tags.
@@ -34,8 +34,8 @@ tag-prompt-input = Tag image in words based on subject, object, event, place. Ou
 
 bundles["zh-CN"].addResource(
   new FluentResource(`
-description = 一个Node.js命令行工具，它使用Ollama或ZhipuAI或Google Gemini或Coze或OpenAI根据图像内容智能地将图像描述和/或标签写入EXIF元数据。
-api-provider = 要使用的AI供应商名称（'ollama'代表Ollama，'zhipu'代表ZhipuAI，'google'代表Google Gemini, 'coze_bot'代表Coze，'openai'代表OpenAI）。
+description = 一个功能强大的Node.js命令行工具和库，使用AI供应商（OpenAI、Google Gemini、Anthropic Claude、Mistral、Ollama、Amazon Bedrock、Azure OpenAI等）根据图像内容智能地将图像描述和标签写入EXIF元数据。
+api-provider = 要使用的AI供应商名称（openai、google、anthropic、mistral、ollama、amazon、bedrock、azure、deepinfra、fireworks、openai-compatible、together、togetherai、xai、openrouter）。
 input = 输入图像文件的路径。
 model = 指定要使用的AI模型，如果供应商支持。
 description-tags = 要写入描述的EXIF标签列表。默认为常见描述标签。

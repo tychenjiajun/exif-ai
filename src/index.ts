@@ -6,6 +6,9 @@ import ISO6391 from "iso-639-1";
 // @ts-expect-error - xhr2 doesn't have TypeScript definitions
 import xhr2 from "xhr2";
 
+// Export the new improved API
+export * from "./api.js";
+
 import fetch, {
   Headers,
   Request,

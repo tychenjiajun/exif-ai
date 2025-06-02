@@ -9,92 +9,184 @@ _Read this in other languages:_
 
 ## About
 
-_Exif AI_ is a powerful CLI tool designed to write AI-generated image descriptions and/or tags directly into the metadata of image files. This tool leverages advanced AI models to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
+_Exif AI_ is a powerful CLI tool and library designed to write AI-generated image descriptions and/or tags directly into the metadata of image files. This tool leverages advanced AI models from multiple providers to analyze image content and generate descriptive metadata, enhancing the accessibility and searchability of your images.
 
-## Usage Example
+Built with the [Vercel AI SDK](https://sdk.vercel.ai/), Exif AI supports 13+ AI providers including OpenAI, Google Gemini, Anthropic Claude, Mistral, Ollama, Amazon Bedrock, Azure OpenAI, and more.
 
-### CLI
+## Quick Start
 
-#### Without Installation
+### CLI Usage
 
-You can run Exif AI directly using npx without installing it globally:
+The CLI has been redesigned for better usability with intuitive commands and clear help text.
+
+#### Basic Usage
 
 ```bash
-npx exif-ai -i example.jpeg -a ollama
+# Without installation (using npx)
+npx exif-ai image.jpg --provider ollama
+
+# With global installation
+exif-ai image.jpg --provider ollama
 ```
 
-#### With Installation
-
-If you have installed Exif AI globally, you can run it directly from the command line:
+#### Common Examples
 
 ```bash
-exif-ai -i example.jpeg -a ollama
+# Basic usage with Ollama (local, no API key needed)
+exif-ai photo.jpg --provider ollama
+
+# Use OpenAI with specific model
+exif-ai photo.jpg --provider openai --model gpt-4o
+
+# Generate only descriptions
+exif-ai photo.jpg --provider google --tasks description
+
+# Preview without writing to file
+exif-ai photo.jpg --provider anthropic --dry-run
+
+# Verbose output for debugging
+exif-ai photo.jpg --provider ollama --verbose
 ```
 
 #### Options
 
 Required options:
 
-- `-a, --api-provider <value>`: Name of the AI provider to use (`openai`, `google`, `anthropic`, `mistral`, `ollama`, `amazon`, `bedrock`, `azure`, `deepinfra`, `fireworks`, `openai-compatible`, `together`, `togetherai`, `xai`, `openrouter`).
+- `-a, --api-provider <value>`: Name of the AI provider to use. Supported providers: `openai`, `google`, `anthropic`, `mistral`, `ollama`, `amazon`, `bedrock`, `azure`, `deepinfra`, `fireworks`, `openai-compatible`, `together`, `togetherai`, `xai`, `openrouter`.
 
 Optional options:
 
-- `-T, --tasks <tasks...>`: List of tasks to perform ('description', 'tag').
-- `-i, --input <file>` Path to the input image file.
-- `-p, --description-prompt <text>`: Custom prompt for the AI provider to generate description. Defaults to a generic image description prompt.
-- `--tag-prompt <text>`: Custom prompt for the AI provider to generate tags. Defaults to a generic image tagging prompt.
+- `-T, --tasks <tasks...>`: List of tasks to perform (`description`, `tag`). Default: `['description', 'tag']`.
+- `-i, --input <file>`: Path to the input image file (required).
+- `-p, --description-prompt <text>`: Custom prompt for the AI provider to generate description.
+- `--tag-prompt <text>`: Custom prompt for the AI provider to generate tags.
 - `-m, --model <name>`: Specify the AI model to use, if supported by the provider.
-- `-t, --description-tags <tags...>`: List of EXIF tags to write the description to. Defaults to common description tags.
-- `--tag-tags <tags...>`: List of EXIF tags to write the tags to. Defaults to common tags.
+- `-t, --description-tags <tags...>`: List of EXIF tags to write the description to. Default: `['XPComment', 'Description', 'ImageDescription', 'Caption-Abstract']`.
+- `--tag-tags <tags...>`: List of EXIF tags to write the tags to. Default: `['Subject', 'TagsList', 'Keywords']`.
 - `-v, --verbose`: Enable verbose output for debugging.
 - `-d, --dry-run`: Preview AI-generated content without writing to the image file.
 - `--exif-tool-write-args <args...>`: Additional ExifTool arguments for writing metadata.
 - `--provider-args <args...>`: Additional arguments for the AI provider.
 - `--avoid-overwrite`: Avoid overwriting if EXIF tags already exist in the file.
-- `--repeat`: The number of times to repeat the task if the AI-generated result is deemed unacceptable. This parameter helps ensure the quality of the output by allowing multiple attempts. Default value is 0. An AI-generated description is considered acceptable if it has more than 10 characters and is not in markdown format. AI-generated tags are considered acceptable if there are more than 1 tag and they are not in markdown format. Using this parameter will consume more tokens, which may incur additional costs. Use it at your own risk.
+- `--repeat <number>`: Number of times to repeat the task if the AI-generated result is deemed unacceptable. Default: 0.
 
 Example usage:
 
 ```bash
-exif-ai -i example.jpg -a ollama -p "Describe this landscape photo."
+# Legacy CLI syntax (still supported)
+exif-ai -i example.jpg -a ollama
+
+# New improved CLI syntax
+exif-ai example.jpg --provider ollama
+exif-ai example.jpg --provider openai --model gpt-4o
+exif-ai example.jpg --provider google --tasks description --dry-run
 ```
 
-### Library
+### Library Usage
 
-To use Exif AI as a library in your project, import it and use the provided functions:
+Exif AI provides three ways to use it as a library, from simple to advanced:
+
+#### 1. Simple API (Recommended for most use cases)
+
+```typescript
+import { processImage } from "exif-ai";
+
+// Basic usage
+await processImage({
+  image: "photo.jpg",
+  provider: "ollama",
+  preview: true // Don't write to file, just preview
+});
+
+// With custom options
+await processImage({
+  image: "photo.jpg",
+  provider: "openai",
+  model: "gpt-4o",
+  tasks: ["description"],
+  descriptionPrompt: "Describe this image in detail.",
+  verbose: true
+});
+```
+
+#### 2. Fluent Builder API (For more control)
+
+```typescript
+import { ExifAI } from "exif-ai";
+
+await new ExifAI("photo.jpg")
+  .provider("google")
+  .model("gemini-1.5-pro")
+  .tasks("description", "tag")
+  .descriptionPrompt("Describe this landscape photo.")
+  .tagPrompt("Generate relevant tags.")
+  .preview() // Don't write to file
+  .verbose()
+  .run();
+```
+
+#### 3. Advanced Configuration API (For complex scenarios)
+
+```typescript
+import { processImageAdvanced } from "exif-ai";
+
+await processImageAdvanced({
+  image: "photo.jpg",
+  ai: {
+    provider: "anthropic",
+    model: "claude-3-5-sonnet-20241022",
+    descriptionPrompt: "Professional image description",
+    tagPrompt: "Generate SEO-friendly tags"
+  },
+  exif: {
+    descriptionTags: ["XPComment", "Description"],
+    tagTags: ["Subject", "Keywords"]
+  },
+  options: {
+    tasks: ["description", "tag"],
+    preview: true,
+    verbose: true,
+    retries: 2
+  }
+});
+```
+
+#### 4. Legacy API (Backward compatibility)
 
 ```typescript
 import { execute } from "exif-ai";
 
-const options = {
-  tasks: ["description"], // List of tasks to perform
-  path: "example.jpg", // Path to the input image file
-  provider: "ollama", // Name of the AI provider to use
-  descriptionTags: [
-    "XPComment",
-    "Description",
-    "ImageDescription",
-    "Caption-Abstract",
-  ], // List of EXIF tags to write the description to
-  tagTags: ["Subject", "TagsList", "Keywords"], // List EXIF tags to write the tags to
-  descriptionPrompt: "Describe this landscape photo.", // Custom prompt for the AI provider to generate description
-  tagPrompt: "Tag this image based on subject, object, event, place.", // Custom prompt for the AI provider to generate tags
-  verbose: false, // Enable verbose output for debugging
-  dry: false, // Preview AI-generated content without writing to the image file
-  writeArgs: [], // Additional ExifTool arguments for writing metadata
-  providerArgs: [], // Additional arguments for the AI provider
-  avoidOverwrite: false, // Avoid overwriting if EXIF tags already exist in the file
-  repeat: 0, // The number of times to repeat the task if the AI-generated result is deemed unacceptable
-};
-
-execute(options)
-  .then(() => {
-    console.log("Image description has been written to EXIF metadata.");
-  })
-  .catch((error) => {
-    console.error("An error occurred:", error);
-  });
+await execute({
+  path: "photo.jpg",
+  provider: "ollama",
+  tasks: ["description", "tag"],
+  dry: true // preview mode
+});
 ```
+
+## API Design Benefits
+
+The new API design provides several improvements:
+
+### CLI Improvements
+- **Intuitive syntax**: `exif-ai image.jpg --provider ollama` instead of cryptic flags
+- **Clear help text**: Organized options with examples and descriptions
+- **Better defaults**: Sensible defaults for common use cases
+- **Grouped options**: Related options are grouped together in help
+- **Backward compatibility**: Old CLI syntax still works
+
+### Library Improvements
+- **Multiple API styles**: Choose the style that fits your use case
+- **Type safety**: Full TypeScript support with proper interfaces
+- **Fluent interface**: Chain methods for readable code
+- **Simple defaults**: Easy to get started with minimal configuration
+- **Advanced control**: Full control when needed
+
+### Developer Experience
+- **Better error messages**: Clear, actionable error messages
+- **Consistent naming**: No more mixed conventions
+- **Modern patterns**: Uses latest JavaScript/TypeScript patterns
+- **Easy testing**: Preview mode for safe testing
 
 ## Installation
 
@@ -120,23 +212,31 @@ Please ensure that you securely manage your API keys. Do not expose them in publ
 
 ## AI SDK Integration
 
-Exif AI now uses the AI SDK by Vercel to provide a unified interface for multiple AI providers. This allows for seamless integration with various AI services without the need for provider-specific code.
+Exif AI is built with the [Vercel AI SDK](https://sdk.vercel.ai/) to provide a unified, modern interface for multiple AI providers. This integration offers:
+
+- **Consistent API**: Same interface across all providers
+- **Better Performance**: Optimized image processing and API efficiency
+- **Type Safety**: Full TypeScript support with proper type definitions
+- **Easy Extensibility**: Simple to add new providers and models
+- **Modern Patterns**: Uses latest AI SDK features and best practices
 
 ### Supported Providers
 
-- OpenAI: A leading AI service provider, recognized for its wide range of AI-powered tools and applications.
-- Google Generative AI: A robust AI service powered by Google, renowned for its high-quality image processing capabilities.
-- Anthropic: A provider focused on developing reliable, interpretable, and steerable AI systems.
-- Mistral: A provider offering state-of-the-art language models with strong performance.
-- Ollama: An innovative local AI service that operates directly on your machine, offering a seamless and private experience.
-- Amazon Bedrock: Amazon's fully managed service that offers a choice of high-performing foundation models.
-- Azure OpenAI: Microsoft's cloud-based service that provides access to OpenAI models with Azure security features.
-- DeepInfra: A platform offering access to various open-source and proprietary AI models.
-- Fireworks: A provider specializing in efficient and cost-effective AI model inference.
-- OpenAI Compatible: A generic interface for services that implement the OpenAI API specification.
-- TogetherAI: A platform that provides access to a wide range of open-source models.
-- XAI: Provider of the Grok model family with vision capabilities.
-- OpenRouter: A unified API gateway that provides access to various AI models from different providers.
+| Provider | Default Model | Description |
+|----------|---------------|-------------|
+| **OpenAI** | `gpt-4o` | Leading AI provider with GPT-4o, GPT-4 Turbo, and other vision models |
+| **Google** | `gemini-1.5-pro` | Google's Gemini models with excellent vision capabilities |
+| **Anthropic** | `claude-3-5-sonnet-20241022` | Claude 3.5 Sonnet and other Claude models with strong reasoning |
+| **Mistral** | `mistral-large-latest` | High-performance European AI models |
+| **Ollama** | `llama3.2-vision` | Local AI models running on your machine (privacy-focused) |
+| **Amazon Bedrock** | `anthropic.claude-3-sonnet-20240229-v1:0` | AWS managed AI service with multiple model choices |
+| **Azure OpenAI** | `gpt-4-vision` | Microsoft's cloud service with OpenAI models |
+| **DeepInfra** | `cogvlm2-llama3-8b-chat` | Platform for open-source and proprietary models |
+| **Fireworks** | `accounts/fireworks/models/llama-v3-8b-instruct` | Fast and cost-effective model inference |
+| **OpenAI Compatible** | `gpt-4-vision` | Generic interface for OpenAI API-compatible services |
+| **TogetherAI** | `cogvlm2-llama3-8b-chat` | Access to wide range of open-source models |
+| **XAI** | `grok-1.5-vision` | Grok models with advanced vision capabilities |
+| **OpenRouter** | `openai/gpt-4o` | Unified gateway to multiple AI providers |
 
 ## Configuration
 
