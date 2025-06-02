@@ -60,8 +60,8 @@ tag-prompt-input = 根据主题、对象、事件、地点对图像进行标签�
 
 export function getText(
   s: string,
-  args?: Record<string, FluentVariable> | null,
-  errors?: Array<Error> | null,
+  arguments_?: Record<string, FluentVariable> | null,
+  errors?: Error[] | null,
 ) {
   const LANG = env.LANG;
 
@@ -72,7 +72,7 @@ export function getText(
   const message = bundle.getMessage(s);
 
   if (message?.value) {
-    return bundle.formatPattern(message.value, args, errors);
+    return bundle.formatPattern(message.value, arguments_, errors);
     // → "Welcome, Anna, to Foo 3000!"
   }
 }

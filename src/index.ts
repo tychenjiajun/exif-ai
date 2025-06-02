@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { exiftool } from "exiftool-vendored";
-import { resolve } from "node:path";
+import path from "node:path";
 import { env } from "node:process";
 import ISO6391 from "iso-639-1";
-// @ts-ignore
+// @ts-expect-error - xhr2 doesn't have TypeScript definitions
 import xhr2 from "xhr2";
 
 import fetch, {
@@ -19,44 +19,183 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 import { getText } from "./fluent/index.js";
 
 if (
-  !globalThis.fetch ||
-  env.https_proxy ||
-  env.HTTPS_PROXY ||
-  env.http_proxy ||
-  env.HTTP_PROXY
+  Boolean(env.https_proxy) ||
+  Boolean(env.HTTPS_PROXY) ||
+  Boolean(env.http_proxy) ||
+  Boolean(env.HTTP_PROXY)
 ) {
-  // @ts-ignore
+  // @ts-expect-error - Polyfilling fetch for proxy support
   globalThis.fetch = function (
     url: URL | RequestInfo,
     init?: RequestInit,
   ): Promise<Response> {
-    const agentObject = env.https_proxy
-      ? { agent: new HttpsProxyAgent(env.https_proxy) }
-      : env.HTTPS_PROXY
-        ? { agent: new HttpsProxyAgent(env.HTTPS_PROXY) }
-        : env.http_proxy
-          ? { agent: new HttpsProxyAgent(env.http_proxy) }
-          : env.HTTP_PROXY
-            ? { agent: new HttpsProxyAgent(env.HTTP_PROXY) }
-            : undefined;
+    let agentObject: { agent: HttpsProxyAgent<string> } | undefined;
+
+    if (env.https_proxy) {
+      agentObject = { agent: new HttpsProxyAgent(env.https_proxy) };
+    } else if (env.HTTPS_PROXY) {
+      agentObject = { agent: new HttpsProxyAgent(env.HTTPS_PROXY) };
+    } else if (env.http_proxy) {
+      agentObject = { agent: new HttpsProxyAgent(env.http_proxy) };
+    } else if (env.HTTP_PROXY) {
+      agentObject = { agent: new HttpsProxyAgent(env.HTTP_PROXY) };
+    }
 
     return fetch(url, agentObject ? { ...init, ...agentObject } : init);
   };
-  // @ts-ignore
+  // @ts-expect-error - Polyfilling Headers
   globalThis.Headers = Headers;
-  // @ts-ignore
+  // @ts-expect-error - Polyfilling Request
   globalThis.Request = Request;
-  // @ts-ignore
+  // @ts-expect-error - Polyfilling Response
   globalThis.Response = Response;
 }
 
-if (global.XMLHttpRequest == null) global.XMLHttpRequest = xhr2;
+// Set XMLHttpRequest for environments that don't have it
+global.XMLHttpRequest = xhr2 as unknown as typeof XMLHttpRequest;
 
 const lang = env.LANG?.slice(0, 2);
 
+/**
+ * Imports the AI SDK provider module
+ */
+async function importProviderModule(provider: string, verbose: boolean) {
+  try {
+    const providerModule = await import(`./provider/ai-sdk.js`);
+    if (verbose) console.log("Using AI SDK with provider:", provider);
+    return providerModule;
+  } catch (error) {
+    console.error("Failed to import AI SDK provider module", error);
+    return null;
+  }
+}
+
+/**
+ * Processes the image and generates metadata
+ */
+async function processImage({
+  tasks,
+  buffer,
+  resolvedPath,
+  model,
+  descriptionPrompt,
+  tagPrompt,
+  providerArgs,
+  providerModule,
+  verbose,
+  descriptionTags,
+  tagTags,
+  existingTags,
+  repeat,
+  provider,
+}: {
+  tasks: string[];
+  buffer: Buffer;
+  resolvedPath: string;
+  model?: string;
+  descriptionPrompt: string;
+  tagPrompt: string;
+  providerArgs?: string[];
+  providerModule: unknown;
+  verbose: boolean;
+  descriptionTags: DescriptionKey[];
+  tagTags: TagKey[];
+  existingTags?: Readonly<import("exiftool-vendored").Tags>;
+  repeat: number;
+  provider: string;
+}) {
+  // AI SDK doesn't use file_id
+  const file_id: string | undefined = undefined;
+
+  if (verbose) {
+    // log tasks' prompt
+    console.log("Description prompt:", descriptionPrompt);
+    console.log("Tag prompt:", tagPrompt);
+  }
+
+  return Promise.all([
+    tasks.includes("description")
+      ? getDescription({
+          buffer,
+          model,
+          prompt: descriptionPrompt,
+          providerArgs,
+          providerModule,
+          verbose,
+          descriptionTags,
+          existingTags,
+          path: resolvedPath,
+          file_id,
+          repeat,
+          provider, // Pass the provider name
+        })
+      : undefined,
+    tasks.includes("tag") || tasks.includes("tags")
+      ? getTags({
+          buffer,
+          model,
+          prompt: tagPrompt,
+          providerArgs,
+          providerModule,
+          tagTags,
+          existingTags,
+          additionalTags: undefined,
+          path: resolvedPath,
+          file_id,
+          repeat,
+          provider, // Pass the provider name
+        })
+      : undefined,
+  ] as const);
+}
+
+/**
+ * Displays the results without writing to file
+ */
+function displayResults(result: Record<string, unknown>, verbose: boolean) {
+  console.log(JSON.stringify(result));
+  if (verbose) console.log("Dry run - did not write to file");
+}
+
+/**
+ * Writes the results to the file
+ */
+async function writeResults(
+  result: Record<string, unknown>,
+  resolvedPath: string,
+  writeArguments: string[] | undefined,
+  verbose: boolean,
+) {
+  if (Object.keys(result).length > 0) {
+    await exiftool.write(resolvedPath, result, { writeArgs: writeArguments });
+    if (verbose) console.log("Wrote description to file:", resolvedPath);
+  } else if (verbose) {
+    console.log("No new tags to write, skipping.");
+  }
+}
+
+/**
+ * Handles the results for a dry run (display only)
+ */
+function handleDryRun(result: Record<string, unknown>, verbose: boolean) {
+  displayResults(result, verbose);
+}
+
+/**
+ * Handles the results for a real run (write to file)
+ */
+async function handleFileWrite(
+  result: Record<string, unknown>,
+  resolvedPath: string,
+  writeArguments: string[] | undefined,
+  verbose: boolean,
+) {
+  await writeResults(result, resolvedPath, writeArguments, verbose);
+}
+
 export async function execute({
   tasks = ["description"],
-  path,
+  path: imagePath,
   provider,
   model,
   descriptionTags = [
@@ -66,8 +205,10 @@ export async function execute({
     "Caption-Abstract",
   ],
   tagTags = ["Subject", "TagsList", "Keywords"],
-  descriptionPrompt = getText('description-prompt-input') ?? `Describe image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"}`,
-  tagPrompt = getText('tag-prompt-input') ?? `Tag image in ${lang ? (ISO6391.getName(lang) ?? "English") : "English"} words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
+  descriptionPrompt = getText("description-prompt-input") ??
+    `Describe image in ${lang ? ISO6391.getName(lang) : "English"}`,
+  tagPrompt = getText("tag-prompt-input") ??
+    `Tag image in ${lang ? ISO6391.getName(lang) : "English"} words based on subject, object, event, place. Output format: <tag1>, <tag2>, <tag3>, <tag4>,  <tag5>,  ..., <tagN>`,
   verbose = false,
   dry = false,
   writeArgs,
@@ -133,10 +274,9 @@ export async function execute({
    */
   repeat?: number;
 }) {
-  if (["description", "tag", "tags"].every((t) => !tasks.includes(t)))
-    return;
+  if (["description", "tag", "tags"].every((t) => !tasks.includes(t))) return;
 
-  const resolvedPath = resolve(path);
+  const resolvedPath = path.resolve(imagePath);
 
   try {
     // Read the file once to get the buffer and existing tags
@@ -150,62 +290,25 @@ export async function execute({
       : undefined;
 
     // Import AI SDK provider module
-    let providerModule;
-    try {
-      providerModule = await import(`./provider/ai-sdk.js`);
-      if (verbose) console.log("Using AI SDK with provider:", provider);
-    } catch (error) {
-      console.error("Failed to import AI SDK provider module", error);
-      return;
-    }
-    if (providerModule == null) {
-      console.error("Import AI SDK provider failed");
-      return;
-    }
+    const providerModule = await importProviderModule(provider, verbose);
+    if (!providerModule) return;
 
-    // AI SDK doesn't use file_id
-    let file_id: string | undefined;
-
-    if (verbose) {
-      // log tasks' prompt
-      console.log("Description prompt:", descriptionPrompt);
-      console.log("Tag prompt:", tagPrompt);
-    }
-
-    const [description, tags] = await Promise.all([
-      tasks.includes("description")
-        ? getDescription({
-            buffer,
-            model,
-            prompt: descriptionPrompt,
-            providerArgs,
-            providerModule,
-            verbose,
-            descriptionTags,
-            existingTags,
-            path: resolvedPath,
-            file_id,
-            repeat,
-            provider, // Pass the provider name
-          })
-        : undefined,
-      tasks.includes("tag") || tasks.includes("tags")
-        ? getTags({
-            buffer,
-            model,
-            prompt: tagPrompt,
-            providerArgs,
-            providerModule,
-            tagTags,
-            existingTags,
-            additionalTags: undefined,
-            path: resolvedPath,
-            file_id,
-            repeat,
-            provider, // Pass the provider name
-          })
-        : undefined,
-    ] as const);
+    const [description, tags] = await processImage({
+      tasks,
+      buffer,
+      resolvedPath,
+      model,
+      descriptionPrompt,
+      tagPrompt,
+      providerArgs,
+      providerModule,
+      verbose,
+      descriptionTags,
+      tagTags,
+      existingTags,
+      repeat,
+      provider,
+    });
 
     const result = {
       ...description,
@@ -213,15 +316,9 @@ export async function execute({
     };
 
     if (dry) {
-      console.log(JSON.stringify(result));
-      if (verbose) console.log("Dry run - did not write to file");
+      handleDryRun(result, verbose);
     } else {
-      if (Object.keys(result).length > 0) {
-        await exiftool.write(resolvedPath, result, { writeArgs });
-        if (verbose) console.log("Wrote description to file:", resolvedPath);
-      } else {
-        if (verbose) console.log("No new tags to write, skipping.");
-      }
+      await handleFileWrite(result, resolvedPath, writeArgs, verbose);
     }
   } catch (error) {
     console.error("An error occurred:", error);

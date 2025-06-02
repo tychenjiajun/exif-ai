@@ -9,14 +9,18 @@ import {
 } from "vitest";
 import { execute } from "../index.js";
 import { exiftool } from "exiftool-vendored";
-import { resolve } from "node:path";
+import path from "node:path";
 import { existsSync, promises as fsPromises } from "node:fs";
 import { deleteAsync } from "del";
 
 let i = 0;
 
-const getDescription = vi.fn(async ({ prompt }: { prompt: string }) => prompt); // Return the prompt as the description
-const getTags = vi.fn(async ({ prompt }: { prompt: string }) => prompt); // Return the prompt as the tags
+const getDescription = vi.fn(({ prompt }: { prompt: string }) =>
+  Promise.resolve(prompt),
+); // Return the prompt as the description
+const getTags = vi.fn(({ prompt }: { prompt: string }) =>
+  Promise.resolve(prompt),
+); // Return the prompt as the tags
 
 describe("Image Processing Tests", () => {
   const baseOptions = {
@@ -40,8 +44,8 @@ describe("Image Processing Tests", () => {
 
   beforeEach(async () => {
     i++;
-    baseOptions.path = `./src/__tests__/image${i}.jpeg`;
-    const resolvedPath = resolve(baseOptions.path);
+    baseOptions.path = `./src/__tests__/image${String(i)}.jpeg`;
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await fsPromises.copyFile(
       "./src/__tests__/image/VCG211476897295.jpeg",
@@ -55,7 +59,7 @@ describe("Image Processing Tests", () => {
   });
 
   it("should run correctly", async () => {
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await execute({
       ...baseOptions,
@@ -65,18 +69,14 @@ describe("Image Processing Tests", () => {
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Describe image.");
     expect(descriptionTags.Description).to.equal("Describe image.");
-    expect(descriptionTags.ImageDescription).to.equal(
-      "Describe image.",
-    );
-    expect(descriptionTags["Caption-Abstract"]).to.equal(
-      "Describe image.",
-    );
+    expect(descriptionTags.ImageDescription).to.equal("Describe image.");
+    expect(descriptionTags["Caption-Abstract"]).to.equal("Describe image.");
 
-    expect(existsSync(`${resolvedPath}_original`)).to.be.true;
+    expect(existsSync(`${resolvedPath}_original`)).toBe(true);
   });
 
   it("should run with prompt correctly", async () => {
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await execute({
       ...baseOptions,
@@ -90,12 +90,12 @@ describe("Image Processing Tests", () => {
     expect(descriptionTags.ImageDescription).to.equal("Describe");
     expect(descriptionTags["Caption-Abstract"]).to.equal("Describe");
 
-    expect(existsSync(`${resolvedPath}_original`)).to.be.true;
+    expect(existsSync(`${resolvedPath}_original`)).toBe(true);
   });
 
   it("should not overwrite existing descriptionTags with avoidOverwrite", async () => {
     // Setup: Write a tag to the test image
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
 
@@ -107,16 +107,12 @@ describe("Image Processing Tests", () => {
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Existing comment");
     expect(descriptionTags.Description).to.equal("Describe image.");
-    expect(descriptionTags.ImageDescription).to.equal(
-      "Describe image.",
-    );
-    expect(descriptionTags["Caption-Abstract"]).to.equal(
-      "Describe image.",
-    );
+    expect(descriptionTags.ImageDescription).to.equal("Describe image.");
+    expect(descriptionTags["Caption-Abstract"]).to.equal("Describe image.");
   });
 
   it("should handle different write args", async () => {
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
     const writeArgs = ["-overwrite_original"];
     await execute({
       ...baseOptions,
@@ -128,12 +124,12 @@ describe("Image Processing Tests", () => {
     const descriptionTags = await exiftool.read(resolvedPath);
     expect(descriptionTags.XPComment).to.equal("Describe image.");
     // Additional assertions can be made based on the expected behavior with the given write args
-    expect(existsSync(`${resolvedPath}_original`)).to.be.false;
+    expect(existsSync(`${resolvedPath}_original`)).toBe(false);
   });
 
   it("should handle without any tasks", async () => {
     // Setup: Write a tag to the test image
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
     await execute({
@@ -157,7 +153,7 @@ describe("Image Processing Tests", () => {
 
   it("should handle dry", async () => {
     // Setup: Write a tag to the test image
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
     await execute({
@@ -180,7 +176,7 @@ describe("Image Processing Tests", () => {
 
   it("should handle no provider", async () => {
     // Setup: Write a tag to the test image
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await exiftool.write(resolvedPath, { XPComment: "Existing comment" });
     await execute({
@@ -202,7 +198,7 @@ describe("Image Processing Tests", () => {
   });
 
   afterEach(async () => {
-    const resolvedPath = resolve(baseOptions.path);
+    const resolvedPath = path.resolve(baseOptions.path);
 
     await deleteAsync(["./src/__tests__/*original"]);
     await fsPromises.unlink(resolvedPath);

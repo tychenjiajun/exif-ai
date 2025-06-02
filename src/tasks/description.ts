@@ -5,6 +5,95 @@ export type DescriptionKey = keyof {
   [K in keyof Tags as Tags[K] extends string | undefined ? K : never]: Tags[K];
 };
 
+/**
+ * Attempts to get a description from the provider
+ */
+async function fetchDescription({
+  module,
+  buffer,
+  model,
+  prompt,
+  providerArgs,
+  path,
+  file_id,
+  provider,
+  verbose,
+  repeat = 0,
+}: {
+  module: { getDescription?: (arguments_: unknown) => Promise<string> };
+  buffer: Buffer;
+  model?: string;
+  prompt: string;
+  providerArgs?: string[];
+  path: string;
+  file_id?: string;
+  provider?: string;
+  verbose: boolean;
+  repeat?: number;
+}): Promise<string | undefined> {
+  let description: string | undefined;
+
+  for (let index = 0; index < repeat + 1; index++) {
+    try {
+      const result = await module.getDescription?.({
+        buffer,
+        model,
+        prompt,
+        providerArgs,
+        path,
+        file_id,
+        provider, // Pass the provider name to the AI SDK
+      });
+      description = result;
+    } catch (error) {
+      if (verbose) {
+        console.error("Failed to get description from provider:", error);
+      }
+    }
+
+    const isValidDescription =
+      description &&
+      description.trim().length > 10 &&
+      !/[*#>`]/.test(description);
+
+    if (isValidDescription && description) {
+      return description.trim().replaceAll("\n", "");
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Creates a record of description tags based on existing tags
+ */
+function createDescriptionRecord(
+  description: string | undefined,
+  descriptionTags: readonly DescriptionKey[],
+  existingTags?: Readonly<Tags>,
+): Record<DescriptionKey, string> {
+  if (!description) {
+    return {} as Record<DescriptionKey, string>;
+  }
+
+  if (!existingTags) {
+    return objectFromEntries(
+      descriptionTags.map((d) => [d, description] as const),
+    );
+  }
+
+  return objectFromEntries(
+    descriptionTags
+      .filter((d) => {
+        const existingTag = existingTags[d];
+        return (
+          typeof existingTag === "string" && existingTag.trim().length === 0
+        );
+      })
+      .map((d) => [d, description] as const),
+  );
+}
+
 export async function getDescription({
   buffer,
   model,
@@ -23,8 +112,8 @@ export async function getDescription({
   model?: string;
   prompt: string;
   providerArgs?: string[];
-  providerModule: any;
-  descriptionTags: Readonly<DescriptionKey[]>;
+  providerModule: unknown;
+  descriptionTags: readonly DescriptionKey[];
   verbose?: boolean;
   existingTags?: Readonly<Tags>;
   path: string;
@@ -35,50 +124,26 @@ export async function getDescription({
   // Get description from provider
   let description: string | undefined;
 
-  if (providerModule) {
-    for (let i = 0; i < (repeat ?? 0) + 1; i++) {
-      try {
-        description = await providerModule.getDescription?.({
-          buffer,
-          model,
-          prompt: prompt,
-          providerArgs,
-          path,
-          file_id,
-          provider, // Pass the provider name to the AI SDK
-        });
-      } catch (error) {
-        if (verbose)
-          console.error("Failed to get description from provider:", error);
-      }
-      if (description && description.trim().length > 10 && !/[*#>`]/.test(description)) {
-        description = description.trim().replaceAll(/\n/g, "");
-        break;
-      }
-    }
+  if (providerModule && typeof providerModule === "object") {
+    const module = providerModule as {
+      getDescription?: (arguments_: unknown) => Promise<string>;
+    };
+
+    description = await fetchDescription({
+      module,
+      buffer,
+      model,
+      prompt,
+      providerArgs,
+      path,
+      file_id,
+      provider,
+      verbose,
+      repeat,
+    });
   }
 
   if (verbose) console.log("Description is:", description);
 
-  return description
-    ? existingTags
-      ? objectFromEntries(
-          descriptionTags
-            .filter((d) => {
-              const existingTag = existingTags[d];
-              if (typeof existingTag === "string") {
-                return existingTag?.trim().length === 0;
-              }
-              return false;
-            })
-            .map((d) => {
-              return [d, description] as const;
-            }),
-        )
-      : objectFromEntries(
-          descriptionTags.map((d) => {
-            return [d, description] as const;
-          }),
-        )
-    : ({} as Record<DescriptionKey, string>);
+  return createDescriptionRecord(description, descriptionTags, existingTags);
 }
