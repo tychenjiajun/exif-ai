@@ -6,7 +6,9 @@ https://github.com/user-attachments/assets/a445d46a-0d3c-44a2-a42e-f98c23e9c1b4
 
 ## 关于
 
-_Exif AI_ 是一款功能强大的命令行工具，专为直接将AI生成的图像描述和/或标签写入图像文件的元数据而设计。该工具运用先进的AI模型来深入分析图像内容，并自动生成相应的描述性元数据，显著提升图像的检索效率和可用性。
+_Exif AI_ 是一款功能强大的命令行工具和库，专为直接将AI生成的图像描述和/或标签写入图像文件的元数据而设计。该工具运用来自多个提供商的先进AI模型来深入分析图像内容，并自动生成相应的描述性元数据，显著提升图像的检索效率和可用性。
+
+基于 [Vercel AI SDK](https://sdk.vercel.ai/) 构建，Exif AI 支持 13+ 个AI提供商，包括 OpenAI、Google Gemini、Anthropic Claude、Mistral、Ollama、Amazon Bedrock、Azure OpenAI 等。
 
 ## 使用示例
 
@@ -32,12 +34,12 @@ exif-ai -i example.jpeg -a ollama
 
 必选项:
 
-- `-a, --api-provider <value>`: 选择要使用的AI供应商，请指定以下名称之一（`openai`对应OpenAI，`google`对应Google Gemini，`anthropic`对应Anthropic，`mistral`对应Mistral，`ollama`对应Ollama，`amazon`或`bedrock`对应Amazon Bedrock，`azure`对应Azure OpenAI，`deepinfra`对应DeepInfra，`fireworks`对应Fireworks，`openai-compatible`对应OpenAI兼容服务，`together`或`togetherai`对应TogetherAI，`xai`对应XAI，`openrouter`对应OpenRouter）
+- `-a, --api-provider <value>`: 选择要使用的AI供应商。支持的供应商：`openai`、`google`、`anthropic`、`mistral`、`ollama`、`amazon`、`bedrock`、`azure`、`deepinfra`、`fireworks`、`openai-compatible`、`together`、`togetherai`、`xai`、`openrouter`。
 
 可选项:
 
-- `-T, --tasks <tasks...>`: 指定要执行的任务列表，支持的选项有`description`（生成描述）、`tag`（生成标签）和`face`（面部识别）。
-- `-i, --input <file>` : 指定要处理的图像文件路径。
+- `-T, --tasks <tasks...>`: 指定要执行的任务列表（`description`、`tag`）。默认：`['description', 'tag']`。
+- `-i, --input <file>`: 指定要处理的图像文件路径（必需）。
 - `-p, --description-prompt <text>`: 自定义AI供应商生成描述的提示语，默认使用通用的图像描述提示。
 - `--tag-prompt <text>`: 自定义AI供应商生成标签的提示语，默认使用通用的图像标签提示。
 - `-m, --model <name>`: 指定要使用的AI模型，如果AI供应商支持自定义模型。
@@ -47,17 +49,26 @@ exif-ai -i example.jpeg -a ollama
 - `-d, --dry-run`: 进行dry run，预览AI生成的内容但不实际写入图像文件。
 - `--exif-tool-write-args <args...>`: 提供额外的参数给ExifTool，用于写入元数据。
 - `--provider-args <args...>`: 提供额外的参数给AI供应商。
-- `-w, --watch <path>`: 监视指定路径中的新文件，当检测到新文件时自动处理。
 - `--avoid-overwrite`: 如果文件中已存在EXIF标签，则避免覆盖现有标签。
-- `--ext <extensions...>`: 指定要监视的文件扩展名，只有符合这些扩展名的文件会被处理。
-- `--concurrency <number>`: 在监视模式下，同时处理的文件数量上限。
-- `--face-group-ids <group...>`: 指定用于面部识别的面部组ID列表。
-- `--repeat <number>`: 如果AI生成结果被认为不可接受时，重复执行任务的次数。此参数通过允许多次尝试来确保输出质量。默认值为0。如果AI生成的描述超过10个字符且不是Markdown格式，则被视为可接受。AI生成的标签如果超过1个且不是Markdown格式，则被视为可接受。使用此参数将消耗更多令牌，可能会产生额外费用。使用时请自行承担风险。
+- `--repeat <number>`: 如果AI生成结果被认为不可接受时，重复执行任务的次数。默认：0。
 
 示例用法:
 
 ```bash
-exif-ai -i example.jpg -a ollama -p "描述这张图片"
+# 使用 Ollama（本地）的基本用法
+exif-ai -i example.jpg -a ollama
+
+# 使用 OpenAI 和自定义模型
+OPENAI_API_KEY=your_key exif-ai -i example.jpg -a openai -m gpt-4o
+
+# 使用 Google Gemini 和自定义提示
+GOOGLE_API_KEY=your_key exif-ai -i example.jpg -a google -p "详细描述这张风景照片。"
+
+# 仅生成标签
+exif-ai -i example.jpg -a anthropic -T tag
+
+# 预览结果（不写入文件）
+exif-ai -i example.jpg -a ollama -d
 ```
 
 ### 作为库集成
@@ -69,32 +80,86 @@ exif-ai -i example.jpg -a ollama -p "描述这张图片"
 
 具体代码示例如下：
 
+### 库使用方法
+
+Exif AI 提供三种使用方式，从简单到高级：
+
+#### 1. 简单 API（推荐用于大多数用例）
+
+```typescript
+import { processImage } from "exif-ai";
+
+// 基本用法
+await processImage({
+  image: "photo.jpg",
+  provider: "ollama",
+  preview: true // 不写入文件，仅预览
+});
+
+// 自定义选项
+await processImage({
+  image: "photo.jpg",
+  provider: "openai",
+  model: "gpt-4o",
+  tasks: ["description"],
+  descriptionPrompt: "详细描述这张图片。",
+  verbose: true
+});
+```
+
+#### 2. 流式构建器 API（更多控制）
+
+```typescript
+import { ExifAI } from "exif-ai";
+
+await new ExifAI("photo.jpg")
+  .provider("google")
+  .model("gemini-1.5-pro")
+  .tasks("description", "tag")
+  .descriptionPrompt("描述这张风景照片。")
+  .tagPrompt("生成相关标签。")
+  .preview() // 不写入文件
+  .verbose()
+  .run();
+```
+
+#### 3. 高级配置 API（复杂场景）
+
+```typescript
+import { processImageAdvanced } from "exif-ai";
+
+await processImageAdvanced({
+  image: "photo.jpg",
+  ai: {
+    provider: "anthropic",
+    model: "claude-3-5-sonnet-20241022",
+    descriptionPrompt: "专业图像描述",
+    tagPrompt: "生成SEO友好的标签"
+  },
+  exif: {
+    descriptionTags: ["XPComment", "Description"],
+    tagTags: ["Subject", "Keywords"]
+  },
+  options: {
+    tasks: ["description", "tag"],
+    preview: true,
+    verbose: true,
+    retries: 2
+  }
+});
+```
+
+#### 4. 传统 API（向后兼容）
+
 ```typescript
 import { execute } from "exif-ai";
 
-const options = {
-  tasks: ["description"], // 要执行的任务列表
-  input: "example.jpg", // 要处理的图像文件
-  provider: "ollama", // 要使用的AI供应商名称
-  descriptionTags: ["Description"], // 要写入描述的EXIF标签列表
-  tagTags: ["TagsList"], // 要写入标签的EXIF标签列表
-  descriptionPrompt: "描述这张图片", // 自定义AI供应商生成描述的提示
-  tagPrompt: "根据主题、对象、事件、地点标记这张图片", // 自定义AI供应商生成标签的提示
-  verbose: true, // 启用调试输出
-  dry: false, // 预览AI生成的内容而不写入图像文件
-  writeArgs: [], // 用于写入元数据的ExifTool的额外参数
-  providerArgs: [], // AI供应商的额外参数
-  avoidOverwrite: false, // 如果文件中已经存在EXIF标签，则避免覆盖
-  doNotEndExifTool: false, // 不在写入元数据后结束ExifTool进程
-};
-
-execute(options)
-  .then((result) => {
-    console.log(result); // 处理结果
-  })
-  .catch((error) => {
-    console.error(error); // 处理错误
-  });
+await execute({
+  path: "photo.jpg",
+  provider: "ollama",
+  tasks: ["description", "tag"],
+  dry: true // 预览模式
+});
 ```
 
 ## 安装指南
@@ -115,16 +180,7 @@ npm install -g exif-ai
 
 `tags`任务通过 AI 供应商为图像创建标签。这些标签将被记录在`tagTags`定义的 EXIF 标签里。
 
-### 面部识别
 
-`face`任务利用腾讯云的 API 在图像上进行面部识别。识别结果将被记录在`tagTags`中指定的 EXIF 标签里。
-
-目前，`face`任务需要配置腾讯云 API 密钥，并且您必须已经开通了腾讯云的人脸识别服务。如果您尚未拥有腾讯云账户，请先注册并开通相关服务。
-
-```bash
-export TENCENTCLOUD_SECRET_ID=your_tencentcloud_secret_id
-export TENCENTCLOUD_SECRET_KEY=your_tencentcloud_secret_key
-```
 
 ### 注意
 
