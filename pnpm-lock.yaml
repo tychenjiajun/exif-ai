@@ -67,7 +67,7 @@ importers:
         version: 3.3.2
       openai:
         specifier: ^5.0.1
-        version: 5.0.1(zod@3.25.46)
+        version: 5.8.2(zod@3.25.46)
       sharp:
         specifier: 0.34.2
         version: 0.34.2
@@ -2053,8 +2053,8 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  openai@5.0.1:
-    resolution: {integrity: sha512-Do6vxhbDv7cXhji/4ct1lrpZYMAOmjYbhyA9LJTuG7OfpbWMpuS+EIXkRT7R+XxpRB1OZhU/op4FU3p3uxU6gw==}
+  openai@5.8.2:
+    resolution: {integrity: sha512-8C+nzoHYgyYOXhHGN6r0fcb4SznuEn1R7YZMvlqDbnCuE0FM2mm3T1HiYW6WIcMS/F1Of2up/cSPjLPaWt0X9Q==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -4607,7 +4607,7 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  openai@5.0.1(zod@3.25.46):
+  openai@5.8.2(zod@3.25.46):
     optionalDependencies:
       zod: 3.25.46
 
